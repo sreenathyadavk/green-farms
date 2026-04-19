@@ -76,9 +76,9 @@ export const Hero = () => {
         >
           <a
             href="#shop"
-            className="inline-flex items-center justify-center h-13 px-7 py-4 rounded-full bg-gold text-charcoal text-sm font-semibold tracking-wide hover:scale-[1.02] transition-transform"
+            className="inline-flex items-center justify-center gap-2 h-13 px-7 py-4 rounded-full bg-gold text-charcoal text-sm font-semibold tracking-wide hover:scale-[1.02] transition-transform shadow-[0_10px_30px_-10px_hsl(var(--gold)/0.6)]"
           >
-            Explore Our Produce
+            <span className="text-base">🛒</span> Order Fresh
           </a>
           <button
             onClick={() => openWhatsApp("Hi! I'd like to know more about B.Tech Wala Hydro Farm produce and salad boxes.")}
