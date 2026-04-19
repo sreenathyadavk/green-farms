@@ -1,7 +1,9 @@
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { LogOut, Menu, ShoppingBag, User as UserIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/store/cart";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 export const Header = () => {
@@ -9,6 +11,8 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const cartCount = useCart((s) => s.count());
   const openCart = useCart((s) => s.open);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
