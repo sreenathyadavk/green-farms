@@ -65,13 +65,25 @@ export const Header = () => {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <a
-              href="#order"
-              className="hidden lg:inline-flex items-center px-5 h-10 rounded-full border border-gold text-gold text-sm font-semibold tracking-wider hover:bg-gold hover:text-charcoal transition-colors"
-            >
-              Order via WhatsApp
-            </a>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {user ? (
+              <button
+                onClick={async () => { await signOut(); }}
+                title={user.email ?? "Sign out"}
+                className="hidden sm:inline-flex items-center gap-2 h-10 px-4 rounded-full border border-cream/25 text-cream/90 text-xs font-semibold tracking-wider hover:border-gold hover:text-gold transition-colors"
+              >
+                <UserIcon className="w-3.5 h-3.5" />
+                <span className="max-w-[120px] truncate">{user.email?.split("@")[0]}</span>
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="hidden sm:inline-flex items-center px-4 sm:px-5 h-10 rounded-full border border-gold text-gold text-xs sm:text-sm font-semibold tracking-wider hover:bg-gold hover:text-charcoal transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
             <button
               aria-label="Open cart"
               onClick={openCart}
