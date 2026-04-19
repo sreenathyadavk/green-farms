@@ -30,10 +30,18 @@ export const PackagesSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className={`glass-card rounded-[28px] overflow-hidden flex flex-col ${pkg.featured ? "md:-mt-4 md:scale-[1.02]" : ""}`}
+                whileHover={{ y: -10 }}
+                className={`glass-card rounded-[28px] overflow-hidden flex flex-col group transition-shadow duration-500 hover:shadow-[0_24px_60px_rgba(0,0,0,0.35)] ${pkg.featured ? "md:-mt-4 md:scale-[1.02]" : ""}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img src={pkg.image} alt={pkg.name} loading="lazy" className="w-full h-full object-cover" />
+                  <motion.img
+                    src={pkg.image}
+                    alt={pkg.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  />
                   <span
                     className={`absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] tracking-[0.16em] uppercase font-semibold ${
                       pkg.badgeAccent ? "bg-gold text-charcoal" : "bg-cream/85 backdrop-blur text-forest"

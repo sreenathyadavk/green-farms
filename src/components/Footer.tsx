@@ -1,11 +1,19 @@
+import logo from "@/assets/logo.png";
+import { WHATSAPP_DISPLAY } from "@/data/catalog";
+
 export const Footer = () => {
   return (
     <footer className="bg-charcoal text-cream py-16">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
-            <div className="font-display text-2xl">B.Tech Wala</div>
-            <div className="text-[10px] tracking-[0.32em] mt-1"><span className="text-gold">HYDRO</span> FARM</div>
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="B.Tech Wala Hydro Farm" className="w-12 h-12 object-contain" />
+              <div>
+                <div className="font-display text-2xl">B.Tech Wala</div>
+                <div className="text-[10px] tracking-[0.32em] mt-0.5"><span className="text-gold">HYDRO</span> FARM</div>
+              </div>
+            </div>
             <p className="mt-5 text-sm text-sand/80">Precision grown. Premium delivered.</p>
           </div>
           <div>
@@ -27,7 +35,7 @@ export const Footer = () => {
           <div>
             <p className="label-eyebrow text-gold mb-4">Contact & Delivery</p>
             <ul className="space-y-2.5 text-sm text-sand/85">
-              <li>WhatsApp: +91 99999 99999</li>
+              <li>WhatsApp: {WHATSAPP_DISPLAY}</li>
               <li>Delivering in Hyderabad</li>
               <li>COD Available</li>
               <li>Fresh weekly deliveries</li>

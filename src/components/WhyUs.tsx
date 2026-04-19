@@ -24,14 +24,21 @@ export const WhyUs = () => {
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-cream rounded-[20px] p-7 shadow-card hover:shadow-card-hover transition-shadow duration-300"
+              whileHover={{ y: -6 }}
+              className="bg-cream rounded-[20px] p-7 shadow-card hover:shadow-card-hover transition-shadow duration-300 group cursor-default"
             >
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-semibold text-text-dark">{f.title}</h3>
+              <motion.div
+                className="text-3xl mb-4 inline-block"
+                whileHover={{ rotate: [0, -12, 12, -8, 0], scale: 1.15 }}
+                transition={{ duration: 0.6 }}
+              >
+                {f.icon}
+              </motion.div>
+              <h3 className="text-lg font-semibold text-text-dark group-hover:text-forest transition-colors">{f.title}</h3>
               <p className="mt-2 text-sm text-text-muted leading-relaxed">{f.text}</p>
             </motion.div>
           ))}

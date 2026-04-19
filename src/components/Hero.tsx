@@ -6,8 +6,13 @@ import { openWhatsApp } from "@/lib/whatsapp";
 export const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen w-full overflow-hidden bg-forest grain">
-      {/* Background image */}
-      <div className="absolute inset-0">
+      {/* Background image with parallax */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
+      >
         <img
           src={heroImg}
           alt="Fresh hydroponic greens under soft light"
@@ -16,7 +21,21 @@ export const Hero = () => {
           height={1080}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-forest/70 via-forest/80 to-charcoal" />
-      </div>
+      </motion.div>
+
+      {/* Floating ambient orbs */}
+      <motion.div
+        aria-hidden
+        className="absolute -top-20 -right-24 w-[420px] h-[420px] rounded-full bg-sage/20 blur-[120px]"
+        animate={{ y: [0, 30, 0], x: [0, -20, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-gold/10 blur-[120px]"
+        animate={{ y: [0, -25, 0], x: [0, 15, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
 
       <div className="relative z-10 container mx-auto pt-32 sm:pt-40 pb-24 min-h-screen flex flex-col">
         <motion.div

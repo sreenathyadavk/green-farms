@@ -19,19 +19,26 @@ export const ProductsSection = () => {
       {/* Filter chips */}
       <section className="bg-mist py-6 sticky-none">
         <div className="container mx-auto">
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5">
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5 snap-x-mandatory">
             {categories.map((c) => (
-              <button
+              <motion.button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`shrink-0 px-4 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-250 ${
+                whileTap={{ scale: 0.94 }}
+                className={`shrink-0 snap-start px-4 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300 relative ${
                   active === c
                     ? "bg-forest text-cream shadow-card"
                     : "bg-sand text-text-dark hover:bg-sand/70"
                 }`}
               >
                 {c}
-              </button>
+                {active === c && (
+                  <motion.span
+                    layoutId="chip-dot"
+                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold"
+                  />
+                )}
+              </motion.button>
             ))}
           </div>
         </div>
@@ -48,6 +55,19 @@ export const ProductsSection = () => {
               Hydroponically grown with precision. Harvested clean. Delivered premium.
             </p>
           </div>
+
+          {active === "Microgreens" && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 sm:mb-8 rounded-2xl bg-forest/5 border border-forest/10 px-5 py-4 flex items-start gap-3"
+            >
+              <span className="mt-1.5 w-2 h-2 rounded-full bg-gold animate-pulse shrink-0" />
+              <p className="text-sm text-text-dark leading-relaxed">
+                <span className="font-semibold">Pre-order only.</span> Microgreens (50g · ₹150) are sown to order — delivered after the <span className="font-semibold">7-day harvest cycle</span>.
+              </p>
+            </motion.div>
+          )}
 
           <AnimatePresence mode="wait">
             <motion.div

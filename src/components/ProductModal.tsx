@@ -76,6 +76,15 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
               <p className="mt-2 font-display text-2xl text-forest font-semibold">{product.price}</p>
               <p className="mt-4 text-text-muted leading-relaxed">{product.description}</p>
 
+              {product.harvestNote && (
+                <div className="mt-5 rounded-2xl bg-gold/15 border border-gold/30 px-4 py-3 flex gap-3 items-start">
+                  <span className="mt-1 w-2 h-2 rounded-full bg-gold shrink-0 animate-pulse" />
+                  <p className="text-[13px] text-text-dark leading-relaxed">
+                    <span className="font-semibold">7-day harvest cycle.</span> {product.harvestNote}
+                  </p>
+                </div>
+              )}
+
               <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
                 {product.idealFor && (
                   <div>
@@ -91,7 +100,7 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
                 )}
                 <div>
                   <p className="label-eyebrow text-gold mb-1">Freshness</p>
-                  <p className="text-text-dark">Within 24 hours of delivery</p>
+                  <p className="text-text-dark">{product.harvestNote ? "Harvested fresh on day 7" : "Within 24 hours of delivery"}</p>
                 </div>
                 {product.packSize && (
                   <div>

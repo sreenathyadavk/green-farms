@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "@/assets/logo.png";
 
 export const LoadingScreen = ({ onDone }: { onDone: () => void }) => {
   const [stage, setStage] = useState<"progress" | "lift" | "done">("progress");
@@ -25,18 +26,27 @@ export const LoadingScreen = ({ onDone }: { onDone: () => void }) => {
         {stage === "progress" && (
           <motion.div
             key="logo"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0 z-[102] flex flex-col items-center justify-center text-center px-6"
           >
-            <div className="font-display text-cream text-[40px] sm:text-6xl leading-none tracking-tight">
+            <motion.img
+              src={logo}
+              alt="B.Tech Wala Hydro Farm"
+              className="w-28 h-28 sm:w-36 sm:h-36 object-contain mb-6"
+              initial={{ y: 14, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <div className="font-display text-cream text-[32px] sm:text-5xl leading-none tracking-tight">
               B.Tech Wala
             </div>
-            <div className="mt-3 text-[11px] sm:text-sm tracking-[0.32em] text-cream/80">
+            <div className="mt-3 text-[10px] sm:text-xs tracking-[0.32em] text-cream/80">
               <span className="text-gold">HYDRO</span> &nbsp;FARM
             </div>
-            <div className="mt-10 h-px w-56 sm:w-72 bg-cream/15 overflow-hidden">
+            <div className="mt-8 h-px w-56 sm:w-72 bg-cream/15 overflow-hidden">
               <motion.div
                 className="h-full bg-gold"
                 initial={{ width: 0 }}
