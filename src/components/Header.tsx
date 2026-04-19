@@ -158,7 +158,24 @@ export const Header = () => {
                   </motion.a>
                 ))}
               </nav>
-              <div className="mt-auto label-eyebrow text-gold">Hyderabad · COD Available</div>
+              <div className="mt-8 pt-6 border-t border-cream/10">
+                {user ? (
+                  <button
+                    onClick={async () => { await signOut(); setMenuOpen(false); }}
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full border border-cream/30 text-cream text-sm font-semibold tracking-wide hover:border-gold hover:text-gold transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" /> Sign out ({user.email?.split("@")[0]})
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setMenuOpen(false); navigate("/auth"); }}
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full bg-gold text-charcoal text-sm font-semibold tracking-wide hover:scale-[1.01] transition-transform"
+                  >
+                    <UserIcon className="w-4 h-4" /> Sign In / Sign Up
+                  </button>
+                )}
+              </div>
+              <div className="mt-6 label-eyebrow text-gold">Hyderabad · COD Available</div>
             </motion.div>
           </div>
         )}
