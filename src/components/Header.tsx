@@ -1,7 +1,9 @@
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { LogOut, Menu, ShoppingBag, User as UserIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/store/cart";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 export const Header = () => {
@@ -9,6 +11,8 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const cartCount = useCart((s) => s.count());
   const openCart = useCart((s) => s.open);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -61,13 +65,25 @@ export const Header = () => {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <a
-              href="#order"
-              className="hidden lg:inline-flex items-center px-5 h-10 rounded-full border border-gold text-gold text-sm font-semibold tracking-wider hover:bg-gold hover:text-charcoal transition-colors"
-            >
-              Order via WhatsApp
-            </a>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {user ? (
+              <button
+                onClick={async () => { await signOut(); }}
+                title={user.email ?? "Sign out"}
+                className="hidden sm:inline-flex items-center gap-2 h-10 px-4 rounded-full border border-cream/25 text-cream/90 text-xs font-semibold tracking-wider hover:border-gold hover:text-gold transition-colors"
+              >
+                <UserIcon className="w-3.5 h-3.5" />
+                <span className="max-w-[120px] truncate">{user.email?.split("@")[0]}</span>
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="hidden sm:inline-flex items-center px-4 sm:px-5 h-10 rounded-full border border-gold text-gold text-xs sm:text-sm font-semibold tracking-wider hover:bg-gold hover:text-charcoal transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
             <button
               aria-label="Open cart"
               onClick={openCart}
@@ -142,7 +158,24 @@ export const Header = () => {
                   </motion.a>
                 ))}
               </nav>
-              <div className="mt-auto label-eyebrow text-gold">Hyderabad · COD Available</div>
+              <div className="mt-8 pt-6 border-t border-cream/10">
+                {user ? (
+                  <button
+                    onClick={async () => { await signOut(); setMenuOpen(false); }}
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full border border-cream/30 text-cream text-sm font-semibold tracking-wide hover:border-gold hover:text-gold transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" /> Sign out ({user.email?.split("@")[0]})
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setMenuOpen(false); navigate("/auth"); }}
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full bg-gold text-charcoal text-sm font-semibold tracking-wide hover:scale-[1.01] transition-transform"
+                  >
+                    <UserIcon className="w-4 h-4" /> Sign In / Sign Up
+                  </button>
+                )}
+              </div>
+              <div className="mt-6 label-eyebrow text-gold">Hyderabad · COD Available</div>
             </motion.div>
           </div>
         )}
