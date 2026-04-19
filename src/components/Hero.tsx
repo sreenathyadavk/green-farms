@@ -51,12 +51,12 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-          className="font-display text-cream mt-7 sm:mt-10 leading-[1.0] tracking-tight"
-          style={{ fontSize: "clamp(56px, 12vw, 128px)", letterSpacing: "-0.025em", fontWeight: 700 }}
+          className="font-display text-cream mt-7 sm:mt-10 leading-[1.02] tracking-tight"
+          style={{ fontSize: "clamp(44px, 9vw, 104px)", letterSpacing: "-0.025em", fontWeight: 700 }}
         >
-          Freshness,
+          Fresh Hydroponic Lettuce
           <br />
-          <span className="italic font-normal text-gold">Reimagined.</span>
+          <span className="italic font-normal text-gold">Grown Clean, Delivered Fresh.</span>
         </motion.h1>
 
         <motion.p
