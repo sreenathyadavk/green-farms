@@ -47,23 +47,17 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
     <AnimatePresence>
       {product && (
         <>
-          <motion.div
-            key="bd"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={onClose}
-            className="fixed inset-0 z-[80] bg-charcoal/60 backdrop-blur-sm"
-          />
-          <motion.div
-            key="sheet"
-            initial={{ y: "100%", scale: 0.95, opacity: 0 }}
-            animate={{ y: 0, scale: 1, opacity: 1 }}
-            exit={{ y: "100%", scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 z-[81] bg-mist/95 backdrop-blur-2xl sm:rounded-[32px] rounded-t-[32px] w-full sm:w-[90vw] sm:max-w-5xl h-auto max-h-[92vh] sm:h-[600px] lg:h-[700px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.4)] border border-cream/50 flex flex-col sm:flex-row"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] bg-charcoal/60 backdrop-blur-sm" />
+          
+          <div className="fixed inset-0 z-[81] flex items-end sm:items-center justify-center pointer-events-none sm:p-4">
+            <motion.div
+              key="sheet"
+              initial={{ y: "100%", scale: 0.95, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: "100%", scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="pointer-events-auto bg-mist/95 backdrop-blur-2xl sm:rounded-[32px] rounded-t-[32px] w-full sm:w-[90vw] sm:max-w-5xl h-auto max-h-[92vh] sm:h-[600px] lg:h-[700px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.4)] border border-cream/50 flex flex-col sm:flex-row relative"
+            >
             <div className="sm:hidden flex justify-center pt-4 pb-2 absolute top-0 inset-x-0 z-50">
               <span className="block w-12 h-1.5 rounded-full bg-charcoal/20" />
             </div>
@@ -155,8 +149,9 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
                   </button>
                 </div>
               </motion.div>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

@@ -53,6 +53,10 @@ export const Hero = () => {
             className="font-display text-cream mt-7 sm:mt-10 leading-[1.02] tracking-tight relative z-10"
             style={{ fontSize: "clamp(44px, 9vw, 104px)", letterSpacing: "-0.025em", fontWeight: 700 }}
           >
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}>
+              Fresh Hydroponic Lettuce
+            </motion.div>
+            
             <div className="italic font-normal mt-2 relative inline-block text-gold">
               <motion.span
                 initial={{ opacity: 0, y: 20 }}
