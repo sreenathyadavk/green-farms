@@ -136,11 +136,14 @@ export const CartDrawer = () => {
                   Final price (incl. ₹{DELIVERY_CHARGE} delivery) confirmed on WhatsApp. COD available.
                 </p>
                 <motion.button
+                  whileHover={{ scale: 1.02, boxShadow: "0px 10px 30px rgba(37,211,102,0.5)" }}
                   whileTap={{ scale: 0.97 }}
                   onClick={handleCheckout}
-                  className="w-full h-13 py-4 rounded-full bg-[#25D366] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(37,211,102,0.35)]"
+                  className="w-full h-13 py-4 rounded-full bg-[#25D366] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(37,211,102,0.35)] relative overflow-hidden transition-shadow duration-300"
                 >
-                  <MessageCircle className="w-4 h-4" /> Confirm Order on WhatsApp
+                  <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity duration-300" />
+                  <MessageCircle className="w-4 h-4 relative z-10" /> 
+                  <span className="relative z-10">Confirm Order on WhatsApp</span>
                 </motion.button>
               </div>
             )}
