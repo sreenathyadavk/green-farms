@@ -47,14 +47,19 @@ const FloatingLeaves = () => {
 };
 
 const PullingSilhouette = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={`w-24 h-24 sm:w-32 sm:h-32 opacity-70 ${className}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    {/* Body leaning heavily left, elegant minimalist lines */}
-    <circle cx="30" cy="30" r="5" className="text-forest fill-forest/10" />
-    <path d="M30 35 Q20 55 25 75" className="text-forest" />
-    <path d="M25 75 L15 95 M25 75 L40 95" className="text-forest" />
-    <path d="M30 45 L50 55 M50 55 L80 58" className="text-forest" />
-    {/* Rope connecting to the form */}
-    <path d="M80 58 L100 58" className="text-gold stroke-[3px]" strokeDasharray="4 4" />
+  <svg viewBox="0 0 100 100" className={`w-32 h-32 sm:w-40 sm:h-40 opacity-90 ${className}`} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    {/* Head leaning heavily left */}
+    <circle cx="30" cy="30" r="7" className="text-forest fill-forest/20" />
+    {/* Torso leaning left */}
+    <path d="M30 37 Q20 55 25 75" className="text-forest" />
+    {/* Back leg planted */}
+    <path d="M25 75 L10 95" className="text-forest" />
+    {/* Front leg bent pulling */}
+    <path d="M25 75 L45 95" className="text-forest" />
+    {/* Arms extended to the right holding the edge of the form */}
+    <path d="M28 48 L70 50 L100 50" className="text-forest" />
+    {/* Hands gripping the edge of the form */}
+    <path d="M96 40 L96 60" className="text-gold stroke-[4px]" />
   </svg>
 );
 
@@ -74,9 +79,8 @@ const Auth = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setAnimPhase(1), 100);
-    const t2 = setTimeout(() => setAnimPhase(2), 1800);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t1 = setTimeout(() => setAnimPhase(1), 300);
+    return () => clearTimeout(t1);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,27 +149,24 @@ const Auth = () => {
       <FloatingLeaves />
 
       <motion.div
-        initial={{ x: "100vw", opacity: 0 }}
-        animate={{ x: animPhase >= 1 ? 0 : "100vw", opacity: animPhase >= 1 ? 1 : 0 }}
+        initial={{ x: "20vw", y: "10vh", opacity: 0 }}
+        animate={{ x: animPhase >= 1 ? 0 : "20vw", y: animPhase >= 1 ? 0 : "10vh", opacity: 1 }}
         transition={{ 
           type: "spring", 
-          stiffness: 45, 
-          damping: 14, 
-          mass: 1.5,
-          opacity: { duration: 0.4 } 
+          stiffness: 50, 
+          damping: 12, 
+          mass: 1.2,
         }}
-        className="relative z-10 w-full max-w-md flex flex-col items-center"
+        className="relative z-10 w-full max-w-md flex flex-col items-center mt-16 sm:mt-0"
       >
-        {/* SVG Pulling Character */}
+        {/* SVG Pulling Character (Always visible) */}
         <motion.div 
-          animate={{ 
-            opacity: animPhase === 2 ? 0 : 1, 
-            filter: animPhase === 2 ? "blur(8px)" : "blur(0px)"
-          }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="absolute -top-20 sm:top-[40%] sm:-translate-y-1/2 sm:right-[100%] sm:mr-2 pointer-events-none flex justify-center w-full sm:w-auto z-20"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+          className="absolute bottom-[100%] sm:bottom-auto sm:-translate-y-1/2 sm:top-[40%] sm:right-[100%] pointer-events-none flex justify-center w-full sm:w-auto z-20"
         >
-          <PullingSilhouette className="rotate-90 sm:rotate-0" />
+          <PullingSilhouette className="rotate-90 sm:rotate-0 -mb-4 sm:mb-0 sm:-mr-2" />
         </motion.div>
 
         <div className="w-full relative">
