@@ -37,8 +37,10 @@ export const Header = () => {
         initial={{ y: -40, opacity: 0, x: "-50%" }}
         animate={{ y: 0, opacity: 1, x: "-50%" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className={`fixed top-4 left-1/2 z-50 transition-all duration-500 w-[95%] max-w-5xl rounded-full ${
-          scrolled ? "glass-dark border border-cream/10 shadow-2xl" : "bg-transparent"
+        className={`fixed top-4 sm:top-6 left-1/2 z-50 transition-all duration-500 w-[95%] max-w-5xl rounded-full ${
+          scrolled 
+            ? "bg-charcoal/40 backdrop-blur-[32px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.15)]" 
+            : "bg-charcoal/20 backdrop-blur-2xl border border-white/5 shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
         }`}
       >
         <div className="flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
@@ -88,18 +90,18 @@ export const Header = () => {
                     window.dispatchEvent(new CustomEvent("open-why-us"));
                   }
                 }}
-                className={`relative px-4 py-2 text-sm tracking-wide transition-colors duration-300 z-10 ${
-                  hoveredLink === l.href ? "text-charcoal font-medium" : "text-cream/90 hover:text-cream"
+                className={`relative px-5 py-2 text-sm tracking-wide transition-colors duration-300 z-10 ${
+                  hoveredLink === l.href ? "text-charcoal font-semibold" : "text-cream/80 hover:text-cream"
                 }`}
               >
                 {hoveredLink === l.href && (
                   <motion.div
                     layoutId="navbar-liquid-bubble"
-                    className="absolute inset-0 bg-gold rounded-full z-[-1]"
+                    className="absolute inset-0 bg-cream rounded-full z-[-1] shadow-[0_4px_12px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.8)]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    transition={{ type: "spring", stiffness: 450, damping: 30 }}
                   />
                 )}
                 {l.label}
