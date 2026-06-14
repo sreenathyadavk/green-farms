@@ -87,23 +87,43 @@ export const WhyUs = () => {
                     whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
                     viewport={{ once: true, margin: isMobile ? "-50px" : "-150px" }}
                     transition={{ duration: 1.2, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                    whileHover={{ scale: 1.02, rotateY: isMobile ? 0 : (i % 2 === 0 ? 3 : -3) }}
-                    className={`bg-cream rounded-[28px] p-8 sm:p-12 shadow-card hover:shadow-[0_40px_80px_rgba(108,140,90,0.15)] transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-12 border border-white/60 ${i % 2 !== 0 ? 'sm:flex-row-reverse sm:text-right' : 'sm:text-left'} text-center`}
-                    style={{ transformOrigin: "top center", transformStyle: "preserve-3d" }}
+                    className="relative"
+                    style={{ perspective: "1000px" }}
                   >
                     <motion.div
-                      className="text-6xl sm:text-8xl shrink-0"
-                      initial={{ scale: 0, rotate: -45, filter: "blur(10px)" }}
-                      whileInView={{ scale: 1, rotate: 0, filter: "blur(0px)" }}
-                      viewport={{ once: true, margin: isMobile ? "-50px" : "-150px" }}
-                      transition={{ duration: 0.9, delay: 0.4 + i * 0.1, type: "spring", bounce: 0.5 }}
+                      whileHover={{ scale: 1.02, rotateY: isMobile ? 0 : (i % 2 === 0 ? 3 : -3) }}
+                      animate={{ y: [0, i % 2 === 0 ? -10 : 10, 0] }}
+                      transition={{ duration: 4 + (i % 3), repeat: Infinity, ease: "easeInOut" }}
+                      className={`relative overflow-hidden bg-cream/95 backdrop-blur-md rounded-[28px] p-8 sm:p-12 shadow-card hover:shadow-[0_40px_80px_rgba(108,140,90,0.15)] transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-12 border border-white/80 ${i % 2 !== 0 ? 'sm:flex-row-reverse sm:text-right' : 'sm:text-left'} text-center`}
+                      style={{ transformOrigin: "center center", transformStyle: "preserve-3d" }}
                     >
-                      {f.icon}
+                      {/* Sweeping Glass Reflection */}
+                      <motion.div 
+                        className="absolute inset-0 z-0 pointer-events-none opacity-60"
+                        initial={{ x: "-150%", skewX: -20 }}
+                        whileInView={{ x: "150%" }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, delay: 0.5 + i * 0.2, ease: "easeInOut" }}
+                        style={{
+                          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)",
+                          width: "50%"
+                        }}
+                      />
+
+                      <motion.div
+                        className="text-6xl sm:text-8xl shrink-0 relative z-10"
+                        initial={{ scale: 0, rotate: -45, filter: "blur(10px)" }}
+                        whileInView={{ scale: 1, rotate: 0, filter: "blur(0px)" }}
+                        viewport={{ once: true, margin: isMobile ? "-50px" : "-150px" }}
+                        transition={{ duration: 0.9, delay: 0.4 + i * 0.1, type: "spring", bounce: 0.5 }}
+                      >
+                        {f.icon}
+                      </motion.div>
+                      <div className="flex-1 relative z-10">
+                        <h3 className="text-2xl sm:text-4xl font-display text-text-dark mb-4">{f.title}</h3>
+                        <p className="text-base sm:text-xl text-text-muted leading-relaxed sm:leading-loose">{f.text}</p>
+                      </div>
                     </motion.div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl sm:text-4xl font-display text-text-dark mb-4">{f.title}</h3>
-                      <p className="text-base sm:text-xl text-text-muted leading-relaxed sm:leading-loose">{f.text}</p>
-                    </div>
                   </motion.div>
                 ))}
               </div>

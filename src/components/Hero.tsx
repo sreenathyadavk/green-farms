@@ -14,13 +14,13 @@ export const Hero = () => {
         animate={{ scale: 1 }}
         transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
       >
-        <img
+        {/* <img
           src={heroImg}
           alt="Fresh hydroponic greens under soft light"
           className="w-full h-full object-cover opacity-30"
           width={1920}
           height={1080}
-        />
+        /> */}
         <div className="absolute inset-0 bg-gradient-to-b from-forest/70 via-forest/80 to-charcoal" />
       </motion.div>
 
