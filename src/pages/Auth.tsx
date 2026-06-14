@@ -116,21 +116,21 @@ const Auth = () => {
         </div>
 
         <div className="rounded-3xl border border-cream/10 bg-cream/[0.04] backdrop-blur-xl p-6 sm:p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
-          {/* Tabs */}
-          <div className="relative grid grid-cols-2 p-1 rounded-full bg-charcoal/60 border border-cream/10 mb-6">
+          {/* Premium Sliding Tabs */}
+          <div className="relative grid grid-cols-2 p-1.5 rounded-2xl bg-forest/20 border border-forest/30 mb-8">
             <motion.div
               layout
-              transition={{ type: "spring", stiffness: 400, damping: 32 }}
-              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-gold"
-              style={{ left: mode === "signin" ? 4 : "calc(50% + 0px)" }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className="absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl bg-forest shadow-[0_2px_10px_rgba(26,46,26,0.4)]"
+              style={{ left: mode === "signin" ? 6 : "calc(50% + 0px)" }}
             />
             {(["signin", "signup"] as Mode[]).map((m) => (
               <button
                 key={m}
                 type="button"
                 onClick={() => setMode(m)}
-                className={`relative z-10 h-10 text-xs font-semibold tracking-[0.12em] uppercase transition-colors ${
-                  mode === m ? "text-charcoal" : "text-cream/70"
+                className={`relative z-10 h-11 text-[13px] font-semibold tracking-[0.1em] uppercase transition-colors duration-300 ${
+                  mode === m ? "text-cream" : "text-cream/50 hover:text-cream/80"
                 }`}
               >
                 {m === "signin" ? "Sign In" : "Sign Up"}
@@ -138,7 +138,16 @@ const Auth = () => {
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mode}
+                initial={{ opacity: 0, x: mode === "signin" ? -20 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: mode === "signin" ? 20 : -20 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="label-eyebrow text-cream/60 block mb-2">Email</label>
               <input
@@ -181,16 +190,16 @@ const Auth = () => {
               type="submit"
               disabled={submitting}
               whileTap={{ scale: 0.98 }}
-              className="w-full h-13 mt-2 rounded-full bg-gold text-charcoal text-sm font-semibold tracking-wide hover:scale-[1.01] transition-transform shadow-[0_10px_30px_-10px_hsl(var(--gold)/0.6)] disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 py-4"
+              className="w-full h-13 mt-4 rounded-xl bg-forest text-cream text-sm font-semibold tracking-wide hover:bg-teal transition-colors shadow-card-hover disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 py-4 border border-cream/10"
             >
               {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
               <AnimatePresence mode="wait">
                 <motion.span
                   key={mode + (submitting ? "-load" : "")}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
                 >
                   {submitting
                     ? mode === "signin"
@@ -204,17 +213,20 @@ const Auth = () => {
             </motion.button>
           </form>
 
-          <p className="mt-5 text-center text-cream/50 text-xs">
+          <p className="mt-6 text-center text-cream/60 text-[13px]">
             {mode === "signin" ? (
               <>New to the farm?{" "}
-                <button onClick={() => setMode("signup")} className="text-gold hover:underline">Create an account</button>
+                <button onClick={() => setMode("signup")} className="text-gold font-medium hover:underline decoration-gold/50 underline-offset-4">Create an account</button>
               </>
             ) : (
               <>Already a customer?{" "}
-                <button onClick={() => setMode("signin")} className="text-gold hover:underline">Sign in</button>
+                <button onClick={() => setMode("signin")} className="text-gold font-medium hover:underline decoration-gold/50 underline-offset-4">Sign in</button>
               </>
             )}
           </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
         <p className="mt-6 text-center text-cream/40 text-[11px] tracking-[0.12em] uppercase">
