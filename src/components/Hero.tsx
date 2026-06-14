@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import heroImg from "@/assets/hero-greens.jpg";
+import plantPlaceholder from "@/assets/p-lettuce-green.jpg";
 import { MessageCircle } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
 
@@ -47,17 +48,50 @@ export const Hero = () => {
           <span>✦</span> Hyderabad's Finest Hydroponic Farm
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-          className="font-display text-cream mt-7 sm:mt-10 leading-[1.02] tracking-tight"
-          style={{ fontSize: "clamp(44px, 9vw, 104px)", letterSpacing: "-0.025em", fontWeight: 700 }}
-        >
-          Fresh Hydroponic Lettuce
-          <br />
-          <span className="italic font-normal text-gold">Grown Clean, Delivered Fresh.</span>
-        </motion.h1>
+        <div className="relative">
+          <motion.h1
+            className="font-display text-cream mt-7 sm:mt-10 leading-[1.02] tracking-tight relative z-10"
+            style={{ fontSize: "clamp(44px, 9vw, 104px)", letterSpacing: "-0.025em", fontWeight: 700 }}
+          >
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}>
+              Fresh Hydroponic Lettuce
+            </motion.div>
+            <div className="italic font-normal text-gold flex flex-wrap gap-x-4 sm:gap-x-5 mt-2">
+              <motion.span
+                initial={{ opacity: 0, x: -20, filter: "blur(8px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="inline-block"
+              >
+                Grown Clean,
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, x: -20, filter: "blur(8px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.8, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
+                className="inline-block"
+              >
+                Delivered Fresh.
+              </motion.span>
+            </div>
+          </motion.h1>
+          
+          {/* Rotating Hydroponic Plant */}
+          <motion.div 
+            className="absolute -right-10 -top-20 sm:right-10 sm:-top-10 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-forest/30 shadow-[0_0_60px_rgba(74,124,89,0.2)] mix-blend-luminosity opacity-40 lg:opacity-80 z-0 pointer-events-none"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.5 }}
+          >
+            <motion.img 
+              src={plantPlaceholder} 
+              alt="Hydroponic Plant" 
+              className="w-full h-full object-cover"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            />
+          </motion.div>
+        </div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}

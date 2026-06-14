@@ -49,7 +49,25 @@ export const Header = () => {
               transition={{ duration: 0.6 }}
             />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-cream text-base sm:text-lg">B.Tech Wala</span>
+              <motion.span 
+                className="font-display text-cream text-base sm:text-lg flex"
+                initial="hidden"
+                animate="visible"
+                variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
+              >
+                {"B.Tech Wala".split("").map((char, i) => (
+                  <motion.span
+                    key={i}
+                    variants={{
+                      hidden: { opacity: 0, y: 10, textShadow: "0px 0px 0px rgba(74,124,89,0)" },
+                      visible: { opacity: 1, y: 0, textShadow: "0px 0px 8px rgba(74,124,89,0.5)" }
+                    }}
+                    style={{ display: char === " " ? "inline" : "inline-block", paddingRight: char === " " ? "0.2em" : "0" }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </motion.span>
               <span className="text-[8px] sm:text-[10px] tracking-[0.3em] text-cream/80">
                 <span className="text-gold">HYDRO</span> FARM
               </span>
