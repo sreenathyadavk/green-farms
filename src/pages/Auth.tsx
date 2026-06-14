@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
-import { Loader2, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Loader2, ArrowLeft, Eye, EyeOff, RefreshCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,7 @@ type Mode = "signin" | "signup";
 const FloatingLeaves = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {[...Array(8)].map((_, i) => (
+      {[...Array(6)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute"
@@ -46,22 +46,59 @@ const FloatingLeaves = () => {
   );
 };
 
-const PullingSilhouette = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={`w-32 h-32 sm:w-40 sm:h-40 opacity-90 ${className}`} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    {/* Head leaning heavily left */}
-    <circle cx="30" cy="30" r="7" className="text-forest fill-forest/20" />
-    {/* Torso leaning left */}
-    <path d="M30 37 Q20 55 25 75" className="text-forest" />
-    {/* Back leg planted */}
-    <path d="M25 75 L10 95" className="text-forest" />
-    {/* Front leg bent pulling */}
-    <path d="M25 75 L45 95" className="text-forest" />
-    {/* Arms extended to the right holding the edge of the form */}
-    <path d="M28 48 L70 50 L100 50" className="text-forest" />
-    {/* Hands gripping the edge of the form */}
-    <path d="M96 40 L96 60" className="text-gold stroke-[4px]" />
-  </svg>
-);
+const PremiumRocket = ({ phase }: { phase: number }) => {
+  const isFlying = phase >= 1 && phase < 4;
+  return (
+    <div className="relative pointer-events-none w-20 h-20 sm:w-28 sm:h-28">
+      <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(108,140,90,0.4)]">
+        <defs>
+          <linearGradient id="rocketBody" x1="0" y1="0" x2="0" y2="100%">
+            <stop stopColor="#F9F6F0" />
+            <stop offset="1" stopColor="#E5E0D8" />
+          </linearGradient>
+          <linearGradient id="rocketFin" x1="0" y1="0" x2="100%" y2="0">
+            <stop stopColor="#6C8C5A" />
+            <stop offset="1" stopColor="#A8C28A" />
+          </linearGradient>
+        </defs>
+        {/* Thruster */}
+        <path d="M40 85 L60 85 L55 95 L45 95 Z" fill="#333" />
+        {/* Fins */}
+        <path d="M50 40 L20 85 L35 85 Z" fill="url(#rocketFin)" />
+        <path d="M50 40 L80 85 L65 85 Z" fill="url(#rocketFin)" />
+        {/* Body */}
+        <path d="M50 10 Q35 30 35 85 L65 85 Q65 30 50 10" fill="url(#rocketBody)" />
+        {/* Window */}
+        <circle cx="50" cy="45" r="8" fill="#1A2E1A" stroke="#6C8C5A" strokeWidth="2" />
+        {/* Leaf Decal */}
+        <path d="M47 43 Q50 40 53 43 Q53 47 50 49 Q47 47 47 43" fill="#A8C28A" />
+      </svg>
+
+      {/* Exhaust Particles */}
+      <AnimatePresence>
+        {isFlying && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute top-[85%] left-1/2 -translate-x-1/2 w-8 h-24 pointer-events-none"
+          >
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ y: 0, scale: 1, opacity: 0.9 }}
+                animate={{ y: [0, 40, 80], scale: [1, 1.5, 0], opacity: [0.9, 0.3, 0] }}
+                transition={{ duration: 0.5 + Math.random() * 0.3, repeat: Infinity, delay: i * 0.08, ease: "easeOut" }}
+                className={`absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full blur-[2px] ${i % 2 === 0 ? 'bg-gold/80' : 'bg-forest/60'}`}
+                style={{ marginLeft: `${(Math.random() - 0.5) * 8}px` }}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -72,16 +109,49 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [animPhase, setAnimPhase] = useState(0);
+  const [animPhase, setAnimPhase] = useState(4);
+  const [showRocket, setShowRocket] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const seqRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!authLoading && user) navigate("/", { replace: true });
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setAnimPhase(1), 300);
-    return () => clearTimeout(t1);
+    const seen = localStorage.getItem("login_intro_seen");
+    if (seen === "true") {
+      setAnimPhase(4);
+      setShowRocket(false);
+    } else {
+      runSequence();
+    }
+    return () => clearSequence();
   }, []);
+
+  const clearSequence = () => {
+    seqRef.current.forEach(clearTimeout);
+    seqRef.current = [];
+  };
+
+  const runSequence = () => {
+    clearSequence();
+    localStorage.setItem("login_intro_seen", "true");
+    setShowRocket(true);
+    setAnimPhase(0);
+    
+    seqRef.current.push(setTimeout(() => setAnimPhase(1), 100));
+    seqRef.current.push(setTimeout(() => setAnimPhase(2), 1100));
+    seqRef.current.push(setTimeout(() => setAnimPhase(3), 3500));
+    seqRef.current.push(setTimeout(() => setShowRocket(false), 4500));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,25 +219,61 @@ const Auth = () => {
       <FloatingLeaves />
 
       <motion.div
-        initial={{ x: "20vw", y: "10vh", opacity: 0 }}
-        animate={{ x: animPhase >= 1 ? 0 : "20vw", y: animPhase >= 1 ? 0 : "10vh", opacity: 1 }}
+        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "20vw", opacity: 0, rotate: 0 }}
+        animate={
+          animPhase === 0 ? { x: "20vw", opacity: 0, rotate: 0 } :
+          animPhase === 1 ? { x: 0, opacity: 1, rotate: -2 } : 
+          { x: 0, opacity: 1, rotate: 0 }
+        }
         transition={{ 
           type: "spring", 
           stiffness: 50, 
           damping: 12, 
           mass: 1.2,
         }}
-        className="relative z-10 w-full max-w-md flex flex-col items-center mt-16 sm:mt-0"
+        className={`relative z-10 w-full max-w-md flex flex-col items-center mt-16 sm:mt-0 transition-all duration-700 ${
+          animPhase >= 2 ? "drop-shadow-[0_0_40px_rgba(108,140,90,0.15)]" : ""
+        }`}
       >
-        {/* SVG Pulling Character (Always visible) */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-          className="absolute bottom-[100%] sm:bottom-auto sm:-translate-y-1/2 sm:top-[40%] sm:right-[100%] pointer-events-none flex justify-center w-full sm:w-auto z-20"
-        >
-          <PullingSilhouette className="rotate-90 sm:rotate-0 -mb-4 sm:mb-0 sm:-mr-2" />
-        </motion.div>
+        {/* Rocket Container */}
+        <AnimatePresence>
+          {showRocket && (
+            <motion.div 
+              initial={{ 
+                x: isMobile ? "0%" : "-100%", 
+                y: isMobile ? "-100%" : 0, 
+                rotate: isMobile ? 180 : -90, 
+                opacity: 0 
+              }}
+              animate={
+                animPhase === 0 || animPhase === 1 ? { 
+                  x: isMobile ? "0%" : "-100%", 
+                  y: isMobile ? "-100%" : 0, 
+                  rotate: isMobile ? 180 : -90, 
+                  opacity: 1 
+                } :
+                animPhase === 2 ? { 
+                  x: isMobile ? ["0%", "-30%", "30%", "0%"] : ["-100%", "-200%", "150%", "0%"], 
+                  y: isMobile ? ["-100%", "-250%", "-400%", "-500%"] : [0, -150, -300, -500],
+                  rotate: isMobile ? [180, 220, 20, 0] : [-90, -130, 30, 0] 
+                } :
+                animPhase === 3 ? { 
+                  x: "0%", 
+                  y: -1000, 
+                  rotate: 0, 
+                  opacity: 0 
+                } : {}
+              }
+              transition={{
+                duration: animPhase >= 2 ? 2.4 : 0.4,
+                ease: "easeInOut"
+              }}
+              className="absolute top-0 sm:top-[40%] sm:-translate-y-1/2 left-1/2 sm:left-0 -translate-x-1/2 sm:-translate-x-0 pointer-events-none flex justify-center z-30"
+            >
+              <PremiumRocket phase={animPhase} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="w-full relative">
         <div className="flex flex-col items-center text-center mb-8">
@@ -304,6 +410,15 @@ const Auth = () => {
         <p className="mt-6 text-center text-cream/40 text-[11px] tracking-[0.12em] uppercase">
           🌿 Soil-Free · Pesticide-Free · Hyderabad
         </p>
+
+        {animPhase === 4 && (
+          <button 
+            onClick={runSequence}
+            className="mt-4 mx-auto flex items-center justify-center gap-1.5 text-[11px] text-cream/30 hover:text-gold transition-colors tracking-widest uppercase"
+          >
+            <RefreshCcw className="w-3 h-3" /> Replay Intro
+          </button>
+        )}
         </div>
       </motion.div>
     </div>
