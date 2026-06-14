@@ -38,14 +38,14 @@ export const RecipeShowcase = ({ recipe, onClose }: RecipeShowcaseProps) => {
   }, []);
 
   const getCardAnimation = () => {
-    if (phase === 1) return { x: 0, y: 0, scale: isMobile ? 1 : 1.2, rotateY: 0 };
-    if (phase === 2) return { x: 0, y: 0, scale: isMobile ? 1 : 1.2, rotateY: 180 };
+    if (phase === 1) return { x: 0, y: 0, scale: isMobile ? 1 : 1.2, opacity: 1 };
+    if (phase === 2) return { x: 0, y: 0, scale: isMobile ? 1 : 1.2, opacity: 1 };
     // Phase 3 & 4
     return {
       x: isMobile ? 0 : "25vw",
       y: isMobile ? "-20vh" : 0,
       scale: isMobile ? 0.8 : 1,
-      rotateY: 180,
+      opacity: 1,
     };
   };
 
@@ -108,7 +108,7 @@ export const RecipeShowcase = ({ recipe, onClose }: RecipeShowcaseProps) => {
           variants={panelVariants}
           initial="hidden"
           animate="visible"
-          className="absolute w-full sm:w-1/2 h-auto max-h-[60vh] sm:h-[80vh] bottom-0 sm:bottom-auto sm:left-0 flex flex-col justify-center px-6 sm:px-16 lg:px-24 pointer-events-auto overflow-y-auto no-scrollbar pb-10 sm:pb-0"
+          className="absolute w-full sm:w-1/2 h-auto max-h-[60vh] sm:h-[100vh] bottom-0 sm:bottom-auto sm:top-0 sm:left-0 flex flex-col px-6 sm:px-16 lg:px-24 pointer-events-auto overflow-y-auto no-scrollbar pt-10 sm:pt-24 pb-12 sm:pb-24"
         >
           <motion.h2 variants={itemVariants} className="font-display text-4xl sm:text-5xl text-text-dark leading-[1.1] mb-4">
             {recipe.title}
@@ -187,11 +187,11 @@ export const RecipeShowcase = ({ recipe, onClose }: RecipeShowcaseProps) => {
         >
           {/* Front of Card */}
           <div
-            className="absolute inset-0 rounded-[32px] overflow-hidden shadow-card"
-            style={{ backfaceVisibility: "hidden" }}
+            className="absolute inset-0 rounded-[32px] shadow-card bg-mist"
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
           >
-            <img src={recipe.image} alt="Front" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-charcoal/20" />
+            <img src={recipe.image} alt="Front" className="absolute inset-0 w-full h-full object-cover rounded-[32px]" />
+            <div className="absolute inset-0 bg-charcoal/20 rounded-[32px]" />
             <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
               <h3 className="font-display text-3xl text-cream drop-shadow-md">{recipe.title}</h3>
             </div>
@@ -199,12 +199,12 @@ export const RecipeShowcase = ({ recipe, onClose }: RecipeShowcaseProps) => {
 
           {/* Back of Card */}
           <div
-            className="absolute inset-0 rounded-[32px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-cream/20 bg-forest"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            className="absolute inset-0 rounded-[32px] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border border-cream/20 bg-forest"
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            <img src={recipe.image} alt="Back" className="w-full h-full object-cover opacity-80" />
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8">
+            <img src={recipe.image} alt="Back" className="absolute inset-0 w-full h-full object-cover opacity-80 rounded-[32px]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent rounded-[32px]" />
+            <div className="absolute bottom-8 left-8 right-8 z-10">
               <span className="px-3 py-1 rounded-full text-[10px] tracking-[0.1em] uppercase bg-gold text-charcoal font-bold mb-3 inline-block">
                 Chef's Special
               </span>
