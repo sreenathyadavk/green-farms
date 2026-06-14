@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Plus, Minus, MessageCircle, Truck, Clock } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { X, Plus, Minus, MessageCircle, Truck, Clock, Banknote } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "@/store/cart";
-import { buildCartMessage, buildThankYouMessage, openWhatsApp } from "@/lib/whatsapp";
+import { buildCartMessage, openWhatsApp } from "@/lib/whatsapp";
 import { DELIVERY_CHARGE } from "@/data/catalog";
 
 export const CartDrawer = () => {
@@ -15,19 +16,18 @@ export const CartDrawer = () => {
 
   const hasMicrogreens = useMemo(() => items.some((i) => i.id.startsWith("mg-")), [items]);
 
+  const navigate = useNavigate();
+  const [paymentMode] = useState<"cod">("cod");
+
   const handleCheckout = () => {
     if (items.length === 0) return;
     // Open primary order message on WhatsApp
     openWhatsApp(buildCartMessage(items));
-    // Follow up with auto thank-you message in a second tab so the user lands with both messages composed
-    setTimeout(() => {
-      openWhatsApp(buildThankYouMessage());
-    }, 700);
-    // Optimistically clear after order is sent
-    setTimeout(() => {
-      clear();
-      close();
-    }, 1400);
+    
+    // Redirect to success page on main tab
+    clear();
+    close();
+    navigate("/success");
   };
 
   return (
@@ -128,12 +128,27 @@ export const CartDrawer = () => {
                   </div>
                 </motion.div>
 
-                <div className="flex items-center justify-between">
+                {/* COD Selection */}
+                <motion.div 
+                  layout
+                  className="rounded-xl border-2 border-forest/20 bg-forest/5 p-4 flex items-center gap-3 cursor-pointer"
+                >
+                  <div className="w-5 h-5 rounded-full border-4 border-forest flex items-center justify-center shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-forest" />
+                  </div>
+                  <Banknote className="w-5 h-5 text-forest" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-text-dark">Cash on Delivery</p>
+                    <p className="text-[11px] text-text-muted">Pay when you receive your fresh box</p>
+                  </div>
+                </motion.div>
+
+                <div className="flex items-center justify-between pt-2">
                   <span className="text-sm text-text-muted">Estimated Total</span>
                   <span className="font-display text-xl text-text-dark">on confirmation</span>
                 </div>
                 <p className="text-[11px] italic text-text-muted leading-relaxed">
-                  Final price (incl. ₹{DELIVERY_CHARGE} delivery) confirmed on WhatsApp. COD available.
+                  Final price (incl. ₹{DELIVERY_CHARGE} delivery) confirmed on WhatsApp. {paymentMode === "cod" ? "COD will be applied." : ""}
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.02, boxShadow: "0px 10px 30px rgba(37,211,102,0.5)" }}
