@@ -1,8 +1,10 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import kaleImg from "@/assets/p-kale.jpg";
 import lettuceImg from "@/assets/p-lettuce-green.jpg";
 import tomatoImg from "@/assets/p-tomato.jpg";
 import mixImg from "@/assets/p-lettucemix.jpg";
+import { RecipeShowcase } from "./RecipeShowcase";
 
 const recipes = [
   {
@@ -32,6 +34,8 @@ const recipes = [
 ];
 
 export const RecipeSection = () => {
+  const [selectedRecipe, setSelectedRecipe] = useState<typeof recipes[0] | null>(null);
+
   return (
     <section className="py-20 sm:py-28 bg-mist relative overflow-hidden">
       <div className="container mx-auto px-5 sm:px-8">
@@ -57,7 +61,7 @@ export const RecipeSection = () => {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className={`flex flex-col ${isEven ? "sm:flex-row" : "sm:flex-row-reverse"} items-center gap-8 sm:gap-16 group`}
               >
-                <div className="w-full sm:w-1/2 relative">
+                <div className="w-full sm:w-1/2 relative cursor-pointer" onClick={() => setSelectedRecipe(recipe)}>
                   <div className="absolute inset-0 bg-gold/10 rounded-3xl transform rotate-3 scale-105 group-hover:rotate-6 transition-transform duration-500" />
                   <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-card">
                     <motion.img
@@ -73,7 +77,10 @@ export const RecipeSection = () => {
                   <span className="text-xs font-semibold text-gold tracking-widest uppercase">Recipe {index + 1}</span>
                   <h3 className="font-display text-2xl sm:text-3xl text-text-dark">{recipe.title}</h3>
                   <p className="text-text-muted leading-relaxed text-sm sm:text-base">{recipe.desc}</p>
-                  <button className="mt-2 self-start text-forest font-semibold text-sm hover:text-gold transition-colors inline-flex items-center gap-1.5">
+                  <button 
+                    onClick={() => setSelectedRecipe(recipe)}
+                    className="mt-2 self-start text-forest font-semibold text-sm hover:text-gold transition-colors inline-flex items-center gap-1.5"
+                  >
                     Read Recipe <span>→</span>
                   </button>
                 </div>
@@ -82,6 +89,12 @@ export const RecipeSection = () => {
           })}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedRecipe && (
+          <RecipeShowcase recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 };
