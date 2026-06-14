@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import heroImg from "@/assets/hero-greens.jpg";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Plant3D } from "./Plant3D";
 
