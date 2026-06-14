@@ -15,6 +15,49 @@ const authSchema = z.object({
 
 type Mode = "signin" | "signup";
 
+const FloatingLeaves = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          initial={{ y: "110vh", x: `${Math.random() * 100}vw`, rotate: 0, opacity: 0 }}
+          animate={{
+            y: "-10vh",
+            x: `calc(${Math.random() * 100}vw + ${Math.random() > 0.5 ? "" : "-"}${Math.random() * 50}px)`,
+            rotate: 360,
+            opacity: [0, Math.random() * 0.3 + 0.1, 0],
+          }}
+          transition={{
+            duration: 15 + Math.random() * 15,
+            repeat: Infinity,
+            delay: Math.random() * 10,
+            ease: "linear",
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-forest/40 w-6 h-6 sm:w-10 sm:h-10">
+            <path d="M12 22c0 0-8-4.5-8-12 0-4.4 3.6-8 8-8s8 3.6 8 8c0 7.5-8 12-8 12z" strokeWidth="1"/>
+            <path d="M12 22V10" strokeWidth="1"/>
+          </svg>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+const PullingSilhouette = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" className={`w-24 h-24 sm:w-32 sm:h-32 opacity-70 ${className}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {/* Body leaning heavily left, elegant minimalist lines */}
+    <circle cx="30" cy="30" r="5" className="text-forest fill-forest/10" />
+    <path d="M30 35 Q20 55 25 75" className="text-forest" />
+    <path d="M25 75 L15 95 M25 75 L40 95" className="text-forest" />
+    <path d="M30 45 L50 55 M50 55 L80 58" className="text-forest" />
+    {/* Rope connecting to the form */}
+    <path d="M80 58 L100 58" className="text-gold stroke-[3px]" strokeDasharray="4 4" />
+  </svg>
+);
+
 const Auth = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -24,10 +67,17 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [animPhase, setAnimPhase] = useState(0);
 
   useEffect(() => {
     if (!authLoading && user) navigate("/", { replace: true });
   }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setAnimPhase(1), 100);
+    const t2 = setTimeout(() => setAnimPhase(2), 1800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,12 +142,33 @@ const Auth = () => {
         <ArrowLeft className="w-4 h-4" /> Back to farm
       </Link>
 
+      <FloatingLeaves />
+
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full max-w-md"
+        initial={{ x: "100vw", opacity: 0 }}
+        animate={{ x: animPhase >= 1 ? 0 : "100vw", opacity: animPhase >= 1 ? 1 : 0 }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 45, 
+          damping: 14, 
+          mass: 1.5,
+          opacity: { duration: 0.4 } 
+        }}
+        className="relative z-10 w-full max-w-md flex flex-col items-center"
       >
+        {/* SVG Pulling Character */}
+        <motion.div 
+          animate={{ 
+            opacity: animPhase === 2 ? 0 : 1, 
+            filter: animPhase === 2 ? "blur(8px)" : "blur(0px)"
+          }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="absolute -top-20 sm:top-[40%] sm:-translate-y-1/2 sm:right-[100%] sm:mr-2 pointer-events-none flex justify-center w-full sm:w-auto z-20"
+        >
+          <PullingSilhouette className="rotate-90 sm:rotate-0" />
+        </motion.div>
+
+        <div className="w-full relative">
         <div className="flex flex-col items-center text-center mb-8">
           <img src={logo} alt="B.Tech Wala Hydro Farm" className="w-14 h-14 object-contain mb-4" />
           <span className="label-eyebrow text-gold mb-2">✦ B.Tech Wala Hydro Farm</span>
@@ -232,6 +303,7 @@ const Auth = () => {
         <p className="mt-6 text-center text-cream/40 text-[11px] tracking-[0.12em] uppercase">
           🌿 Soil-Free · Pesticide-Free · Hyderabad
         </p>
+        </div>
       </motion.div>
     </div>
   );
