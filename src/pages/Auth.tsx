@@ -126,7 +126,7 @@ const Auth = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    const seen = localStorage.getItem("login_intro_seen");
+    const seen = localStorage.getItem("login_intro_rocket_seen");
     if (seen === "true") {
       setAnimPhase(4);
       setShowRocket(false);
@@ -152,7 +152,7 @@ const Auth = () => {
     seqRef.current.push(setTimeout(() => {
       setShowRocket(false);
       setAnimPhase(4);
-      localStorage.setItem("login_intro_seen", "true");
+      localStorage.setItem("login_intro_rocket_seen", "true");
     }, 4500));
   };
 
