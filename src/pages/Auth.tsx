@@ -126,13 +126,7 @@ const Auth = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    const seen = localStorage.getItem("login_intro_rocket_seen");
-    if (seen === "true") {
-      setAnimPhase(4);
-      setShowRocket(false);
-    } else {
-      runSequence();
-    }
+    runSequence();
     return () => clearSequence();
   }, []);
 
@@ -152,7 +146,6 @@ const Auth = () => {
     seqRef.current.push(setTimeout(() => {
       setShowRocket(false);
       setAnimPhase(4);
-      localStorage.setItem("login_intro_rocket_seen", "true");
     }, 4500));
   };
 
@@ -222,9 +215,9 @@ const Auth = () => {
       <FloatingLeaves />
 
       <motion.div
-        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "20vw", opacity: 0, rotate: 0 }}
+        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "100vw", opacity: 1, rotate: 0 }}
         animate={
-          animPhase === 0 ? { x: "20vw", opacity: 0, rotate: 0 } :
+          animPhase === 0 ? { x: "100vw", opacity: 1, rotate: 0 } :
           animPhase === 1 ? { x: 0, opacity: 1, rotate: -2 } : 
           { x: 0, opacity: 1, rotate: 0 }
         }
@@ -414,14 +407,6 @@ const Auth = () => {
           🌿 Soil-Free · Pesticide-Free · Hyderabad
         </p>
 
-        {animPhase === 4 && (
-          <button 
-            onClick={runSequence}
-            className="mt-4 mx-auto flex items-center justify-center gap-1.5 text-[11px] text-cream/30 hover:text-gold transition-colors tracking-widest uppercase"
-          >
-            <RefreshCcw className="w-3 h-3" /> Replay Intro
-          </button>
-        )}
         </div>
       </motion.div>
     </div>
