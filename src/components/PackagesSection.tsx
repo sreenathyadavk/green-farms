@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { packages, addOns, type Package } from "@/data/catalog";
 import { PackageModal } from "./PackageModal";
+import { PackageShowcase } from "./PackageShowcase";
 import { openWhatsApp, buildPackageMessage } from "@/lib/whatsapp";
 
 const containerVariants = {
@@ -20,6 +21,7 @@ const itemVariants = {
 };
 
 export const PackagesSection = () => {
+  const [showcase, setShowcase] = useState<Package | null>(null);
   const [selected, setSelected] = useState<Package | null>(null);
 
   return (
@@ -94,7 +96,7 @@ export const PackagesSection = () => {
                   
                   <motion.div variants={itemVariants} className="mt-5 flex items-center gap-3">
                     <button
-                      onClick={() => setSelected(pkg)}
+                      onClick={() => setShowcase(pkg)}
                       className="flex-1 h-11 px-5 rounded-full border border-cream/50 text-cream text-sm font-medium hover:bg-cream hover:text-charcoal transition-colors"
                     >
                       View Details
@@ -128,6 +130,19 @@ export const PackagesSection = () => {
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {showcase && (
+          <PackageShowcase
+            key="showcase"
+            pkg={showcase}
+            onComplete={() => {
+              setSelected(showcase);
+              setShowcase(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <PackageModal pkg={selected} onClose={() => setSelected(null)} />
     </>

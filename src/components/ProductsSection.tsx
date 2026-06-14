@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { products, type Category, type Product } from "@/data/catalog";
 import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
+import { ProductShowcase } from "./ProductShowcase";
 
 const categories: Category[] = ["All", "Greens", "Herbs", "Microgreens", "Boxes", "Fitness", "Premium"];
 
 export const ProductsSection = () => {
   const [active, setActive] = useState<Category>("All");
+  const [showcase, setShowcase] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
 
   const filtered = products.filter((p) =>
@@ -79,7 +81,7 @@ export const ProductsSection = () => {
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
             >
               {filtered.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} onClick={() => setSelected(p)} />
+                <ProductCard key={p.id} product={p} index={i} onClick={() => setShowcase(p)} />
               ))}
             </motion.div>
           </AnimatePresence>
@@ -89,6 +91,19 @@ export const ProductsSection = () => {
           )}
         </div>
       </section>
+
+      <AnimatePresence>
+        {showcase && (
+          <ProductShowcase
+            key="showcase"
+            product={showcase}
+            onComplete={() => {
+              setSelected(showcase);
+              setShowcase(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <ProductModal product={selected} onClose={() => setSelected(null)} />
     </>

@@ -6,6 +6,19 @@ import { useCart } from "@/store/cart";
 import { useToast } from "@/store/toast";
 import { openWhatsApp, buildPackageMessage } from "@/lib/whatsapp";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
+};
+
 export const PackageModal = ({ pkg, onClose }: { pkg: Package | null; onClose: () => void }) => {
   const [qty, setQty] = useState(1);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
@@ -71,12 +84,12 @@ export const PackageModal = ({ pkg, onClose }: { pkg: Package | null; onClose: (
               <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] tracking-[0.16em] uppercase font-semibold bg-gold text-charcoal">{pkg.badge}</span>
             </div>
 
-            <div className="p-6 sm:p-8">
-              <h3 className="font-display text-3xl text-text-dark leading-tight">{pkg.name}</h3>
-              <p className="mt-2 font-display text-2xl text-forest font-semibold">{pkg.price} <span className="text-base text-text-muted font-sans font-normal">/ week</span></p>
-              <p className="mt-4 text-text-muted leading-relaxed">{pkg.summary}</p>
+            <motion.div variants={containerVariants} initial="hidden" animate="visible" className="p-6 sm:p-8">
+              <motion.h3 variants={itemVariants} className="font-display text-3xl text-text-dark leading-tight">{pkg.name}</motion.h3>
+              <motion.p variants={itemVariants} className="mt-2 font-display text-2xl text-forest font-semibold">{pkg.price} <span className="text-base text-text-muted font-sans font-normal">/ week</span></motion.p>
+              <motion.p variants={itemVariants} className="mt-4 text-text-muted leading-relaxed">{pkg.summary}</motion.p>
 
-              <div className="mt-6">
+              <motion.div variants={itemVariants} className="mt-6">
                 <p className="label-eyebrow text-gold mb-3">What's Inside</p>
                 <ul className="space-y-2">
                   {pkg.contents.map((c) => (
@@ -85,9 +98,9 @@ export const PackageModal = ({ pkg, onClose }: { pkg: Package | null; onClose: (
                     </li>
                   ))}
                 </ul>
-              </div>
+              </motion.div>
 
-              <div className="mt-6">
+              <motion.div variants={itemVariants} className="mt-6">
                 <p className="label-eyebrow text-gold mb-3">Add Extras</p>
                 <div className="flex flex-wrap gap-2">
                   {addOns.map((a) => {
@@ -105,23 +118,23 @@ export const PackageModal = ({ pkg, onClose }: { pkg: Package | null; onClose: (
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="mt-7 flex items-center gap-3 bg-sand/60 rounded-full p-1.5 w-fit">
+              <motion.div variants={itemVariants} className="mt-7 flex items-center gap-3 bg-sand/60 rounded-full p-1.5 w-fit">
                 <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-9 h-9 rounded-full bg-cream inline-flex items-center justify-center"><Minus className="w-4 h-4" /></button>
                 <span className="w-8 text-center font-medium">{qty}</span>
                 <button onClick={() => setQty((q) => q + 1)} className="w-9 h-9 rounded-full bg-cream inline-flex items-center justify-center"><Plus className="w-4 h-4" /></button>
-              </div>
+              </motion.div>
 
-              <div className="mt-6 space-y-3">
-                <button onClick={handleAdd} className="w-full h-13 py-4 rounded-2xl bg-forest text-cream text-sm font-semibold">
+              <motion.div variants={itemVariants} className="mt-6 space-y-3">
+                <button onClick={handleAdd} className="w-full h-13 py-4 rounded-2xl bg-forest text-cream text-sm font-semibold hover:opacity-95 transition-opacity">
                   Add to Cart
                 </button>
                 <button onClick={() => openWhatsApp(buildPackageMessage(pkg.name, pkg.price))} className="w-full h-13 py-4 rounded-2xl bg-[#25D366] text-white text-sm font-semibold inline-flex items-center justify-center gap-2">
                   <MessageCircle className="w-4 h-4" /> Order via WhatsApp
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </>
       )}

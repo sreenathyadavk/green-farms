@@ -6,6 +6,19 @@ import { useCart } from "@/store/cart";
 import { useToast } from "@/store/toast";
 import { openWhatsApp, buildProductMessage } from "@/lib/whatsapp";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
+};
+
 export const ProductModal = ({ product, onClose }: { product: Product | null; onClose: () => void }) => {
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
@@ -71,21 +84,21 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
               </div>
             </div>
 
-            <div className="p-6 sm:p-8">
-              <h3 className="font-display text-3xl text-text-dark leading-tight">{product.name}</h3>
-              <p className="mt-2 font-display text-2xl text-forest font-semibold">{product.price}</p>
-              <p className="mt-4 text-text-muted leading-relaxed">{product.description}</p>
+            <motion.div variants={containerVariants} initial="hidden" animate="visible" className="p-6 sm:p-8">
+              <motion.h3 variants={itemVariants} className="font-display text-3xl text-text-dark leading-tight">{product.name}</motion.h3>
+              <motion.p variants={itemVariants} className="mt-2 font-display text-2xl text-forest font-semibold">{product.price}</motion.p>
+              <motion.p variants={itemVariants} className="mt-4 text-text-muted leading-relaxed">{product.description}</motion.p>
 
               {product.harvestNote && (
-                <div className="mt-5 rounded-2xl bg-gold/15 border border-gold/30 px-4 py-3 flex gap-3 items-start">
+                <motion.div variants={itemVariants} className="mt-5 rounded-2xl bg-gold/15 border border-gold/30 px-4 py-3 flex gap-3 items-start">
                   <span className="mt-1 w-2 h-2 rounded-full bg-gold shrink-0 animate-pulse" />
                   <p className="text-[13px] text-text-dark leading-relaxed">
                     <span className="font-semibold">7-day harvest cycle.</span> {product.harvestNote}
                   </p>
-                </div>
+                </motion.div>
               )}
 
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+              <motion.div variants={itemVariants} className="mt-6 grid grid-cols-2 gap-4 text-sm">
                 {product.idealFor && (
                   <div>
                     <p className="label-eyebrow text-gold mb-1">Ideal For</p>
@@ -108,15 +121,15 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
                     <p className="text-text-dark">{product.packSize}</p>
                   </div>
                 )}
-              </div>
+              </motion.div>
 
-              <div className="mt-7 flex items-center gap-3 bg-sand/60 rounded-full p-1.5 w-fit">
+              <motion.div variants={itemVariants} className="mt-7 flex items-center gap-3 bg-sand/60 rounded-full p-1.5 w-fit">
                 <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-9 h-9 rounded-full bg-cream inline-flex items-center justify-center"><Minus className="w-4 h-4" /></button>
                 <span className="w-8 text-center font-medium">{qty}</span>
                 <button onClick={() => setQty((q) => q + 1)} className="w-9 h-9 rounded-full bg-cream inline-flex items-center justify-center"><Plus className="w-4 h-4" /></button>
-              </div>
+              </motion.div>
 
-              <div className="mt-6 space-y-3">
+              <motion.div variants={itemVariants} className="mt-6 space-y-3">
                 <button
                   onClick={handleAdd}
                   className="w-full h-13 py-4 rounded-2xl bg-forest text-cream text-sm font-semibold tracking-wide hover:opacity-95 transition-opacity"
@@ -129,8 +142,8 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
                 >
                   <MessageCircle className="w-4 h-4" /> Order via WhatsApp
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </>
       )}

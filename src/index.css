@@ -199,3 +199,13 @@
   background: hsl(var(--sage) / 0.6);
   animation: pulse-ring 2s ease-out infinite;
 }
+
+@keyframes text-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-text-shimmer {
+  background-size: 200% auto;
+  animation: text-shimmer 4s ease-in-out infinite;
+}

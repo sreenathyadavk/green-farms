@@ -56,40 +56,63 @@ export const Hero = () => {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}>
               Fresh Hydroponic Lettuce
             </motion.div>
-            <div className="italic font-normal text-gold flex flex-wrap gap-x-4 sm:gap-x-5 mt-2">
-              <motion.span
-                initial={{ opacity: 0, x: -20, filter: "blur(8px)" }}
-                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-block"
+            <div className="italic font-normal mt-2">
+              <motion.div 
+                initial={{ backgroundImage: "linear-gradient(to right, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--gold)))" }}
+                animate={{ backgroundImage: "linear-gradient(to right, hsl(var(--gold)), hsl(var(--teal)), hsl(var(--sage)))" }}
+                transition={{ duration: 1.5, delay: 3.5, ease: "easeInOut" }}
+                className="bg-clip-text text-transparent animate-text-shimmer"
               >
-                Grown Clean,
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0, x: -20, filter: "blur(8px)" }}
-                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.8, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-block"
-              >
-                Delivered Fresh.
-              </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="inline-block mr-3 sm:mr-4"
+                >
+                  Grown Clean,
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 2.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="inline-block"
+                >
+                  Delivered Fresh.
+                </motion.span>
+              </motion.div>
             </div>
           </motion.h1>
           
-          {/* Rotating Hydroponic Plant */}
+          {/* Rotating 3D Hydroponic Plant */}
           <motion.div 
-            className="absolute -right-10 -top-20 sm:right-10 sm:-top-10 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-forest/30 shadow-[0_0_60px_rgba(74,124,89,0.2)] mix-blend-luminosity opacity-40 lg:opacity-80 z-0 pointer-events-none"
+            className="absolute -right-10 -top-20 sm:right-10 sm:-top-10 w-48 h-48 sm:w-72 sm:h-72 lg:w-[420px] lg:h-[420px] z-0 pointer-events-none"
+            style={{ perspective: 1200 }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5 }}
           >
-            <motion.img 
-              src={plantPlaceholder} 
-              alt="Hydroponic Plant" 
-              className="w-full h-full object-cover"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-            />
+            <motion.div
+              className="w-full h-full relative"
+              animate={{ 
+                rotateY: [0, 360],
+                rotateX: [0, 15, -15, 0],
+                y: [-20, 20, -20]
+              }}
+              transition={{
+                rotateY: { duration: 30, repeat: Infinity, ease: "linear" },
+                rotateX: { duration: 14, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <div className="absolute inset-0 rounded-full bg-forest/40 blur-3xl" style={{ transform: "translateZ(-150px) translateY(50px)" }} />
+              <img 
+                src={plantPlaceholder} 
+                alt="Hydroponic Plant" 
+                className="w-full h-full object-cover rounded-full shadow-[0_30px_80px_rgba(26,46,26,0.5)] border-2 border-forest/20"
+                style={{ transform: "translateZ(80px)" }}
+              />
+            </motion.div>
           </motion.div>
         </div>
 
