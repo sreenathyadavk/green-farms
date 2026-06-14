@@ -215,9 +215,9 @@ const Auth = () => {
       <FloatingLeaves />
 
       <motion.div
-        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "100vw", opacity: 1, rotate: 0 }}
+        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "150vw", opacity: 1, rotate: 0 }}
         animate={
-          animPhase === 0 ? { x: "100vw", opacity: 1, rotate: 0 } :
+          animPhase === 0 ? { x: "150vw", opacity: 1, rotate: 0 } :
           animPhase === 1 ? { x: 0, opacity: 1, rotate: -2 } : 
           { x: 0, opacity: 1, rotate: 0 }
         }
@@ -239,7 +239,7 @@ const Auth = () => {
                 x: isMobile ? "0%" : "-100%", 
                 y: isMobile ? "-100%" : 0, 
                 rotate: isMobile ? 180 : -90, 
-                opacity: 0 
+                opacity: 1 
               }}
               animate={
                 animPhase === 0 || animPhase === 1 ? { 
@@ -261,7 +261,7 @@ const Auth = () => {
                 } : {}
               }
               transition={{
-                duration: animPhase >= 2 ? 2.4 : 0.4,
+                duration: animPhase >= 2 ? 2.4 : 0,
                 ease: "easeInOut"
               }}
               className="absolute top-0 sm:top-[40%] sm:-translate-y-1/2 left-1/2 sm:left-0 -translate-x-1/2 sm:-translate-x-0 pointer-events-none flex justify-center z-30"
