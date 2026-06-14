@@ -143,14 +143,17 @@ const Auth = () => {
 
   const runSequence = () => {
     clearSequence();
-    localStorage.setItem("login_intro_seen", "true");
     setShowRocket(true);
     setAnimPhase(0);
     
     seqRef.current.push(setTimeout(() => setAnimPhase(1), 100));
     seqRef.current.push(setTimeout(() => setAnimPhase(2), 1100));
     seqRef.current.push(setTimeout(() => setAnimPhase(3), 3500));
-    seqRef.current.push(setTimeout(() => setShowRocket(false), 4500));
+    seqRef.current.push(setTimeout(() => {
+      setShowRocket(false);
+      setAnimPhase(4);
+      localStorage.setItem("login_intro_seen", "true");
+    }, 4500));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
