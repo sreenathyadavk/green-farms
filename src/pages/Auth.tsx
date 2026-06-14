@@ -18,7 +18,7 @@ type Mode = "signin" | "signup";
 const FloatingLeaves = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {[...Array(6)].map((_, i) => (
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute"
@@ -27,7 +27,7 @@ const FloatingLeaves = () => {
             y: "-10vh",
             x: `calc(${Math.random() * 100}vw + ${Math.random() > 0.5 ? "" : "-"}${Math.random() * 50}px)`,
             rotate: 360,
-            opacity: [0, Math.random() * 0.3 + 0.1, 0],
+            opacity: [0, Math.random() * 0.4 + 0.2, 0],
           }}
           transition={{
             duration: 15 + Math.random() * 15,
@@ -36,7 +36,7 @@ const FloatingLeaves = () => {
             ease: "linear",
           }}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-forest/40 w-6 h-6 sm:w-10 sm:h-10">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-forest/60 w-6 h-6 sm:w-10 sm:h-10">
             <path d="M12 22c0 0-8-4.5-8-12 0-4.4 3.6-8 8-8s8 3.6 8 8c0 7.5-8 12-8 12z" strokeWidth="1"/>
             <path d="M12 22V10" strokeWidth="1"/>
           </svg>
