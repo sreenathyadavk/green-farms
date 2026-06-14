@@ -21,25 +21,27 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
   const links = [
     { label: "Home", href: "#home" },
     { label: "Shop", href: "#shop" },
     { label: "Salad Packages", href: "#packages" },
-    { label: "About", href: "#about" },
+    { label: "Why Us", href: "#why-us" },
     { label: "Order", href: "#order" },
   ];
 
   return (
     <>
       <motion.header
-        initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: -40, opacity: 0, x: "-50%" }}
+        animate={{ y: 0, opacity: 1, x: "-50%" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass-dark border-b border-cream/5" : "bg-transparent"
+        className={`fixed top-4 left-1/2 z-50 transition-all duration-500 w-[95%] max-w-5xl rounded-full ${
+          scrolled ? "glass-dark border border-cream/10 shadow-2xl" : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto flex items-center justify-between h-16 sm:h-20">
+        <div className="flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
           <a href="#home" className="flex items-center gap-2.5 group">
             <motion.img
               src={logo}
@@ -74,11 +76,33 @@ export const Header = () => {
             </span>
           </a>
 
-          <nav className="hidden lg:flex items-center gap-9">
+          <nav className="hidden lg:flex items-center gap-1 relative" onMouseLeave={() => setHoveredLink(null)}>
             {links.map((l) => (
-              <a key={l.href} href={l.href} className="relative text-cream/85 hover:text-gold text-sm tracking-wide transition-colors group">
+              <a 
+                key={l.href} 
+                href={l.href} 
+                onMouseEnter={() => setHoveredLink(l.href)}
+                onClick={(e) => {
+                  if (l.href === "#why-us") {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent("open-why-us"));
+                  }
+                }}
+                className={`relative px-4 py-2 text-sm tracking-wide transition-colors duration-300 z-10 ${
+                  hoveredLink === l.href ? "text-charcoal font-medium" : "text-cream/90 hover:text-cream"
+                }`}
+              >
+                {hoveredLink === l.href && (
+                  <motion.div
+                    layoutId="navbar-liquid-bubble"
+                    className="absolute inset-0 bg-gold rounded-full z-[-1]"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
                 {l.label}
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
               </a>
             ))}
           </nav>
@@ -166,7 +190,13 @@ export const Header = () => {
                   <motion.a
                     key={l.href}
                     href={l.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(e) => {
+                      if (l.href === "#why-us") {
+                        e.preventDefault();
+                        window.dispatchEvent(new CustomEvent("open-why-us"));
+                      }
+                      setMenuOpen(false);
+                    }}
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}

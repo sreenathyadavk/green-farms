@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 
 const features = [
   { icon: "🌱", title: "Soil-Free Cultivation", text: "Grown in precisely controlled nutrient water — no soil, no pesticides, no compromise." },
@@ -10,40 +12,105 @@ const features = [
 ];
 
 export const WhyUs = () => {
-  return (
-    <section className="bg-mist py-20 sm:py-28">
-      <div className="container mx-auto">
-        <div className="max-w-2xl mb-14">
-          <p className="label-eyebrow text-gold mb-4">THE DIFFERENCE</p>
-          <h2 className="font-display text-text-dark leading-[1.1]" style={{ fontSize: "clamp(34px, 5.2vw, 52px)" }}>
-            Why B.Tech Wala<br/><span className="italic font-normal">Hydro Farm?</span>
-          </h2>
-        </div>
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6 }}
-              className="bg-cream rounded-[20px] p-7 shadow-card hover:shadow-card-hover transition-shadow duration-300 group cursor-default"
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handleResize);
+    
+    const onOpen = () => setIsOpen(true);
+    window.addEventListener("open-why-us", onOpen);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("open-why-us", onOpen);
+    };
+  }, []);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 bg-charcoal/70 backdrop-blur-xl"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 40 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="relative w-full max-w-5xl h-[100dvh] sm:h-[90vh] sm:max-h-[900px] overflow-y-auto no-scrollbar sm:rounded-[32px] bg-mist sm:shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
+          >
+            <button
+              onClick={() => setIsOpen(false)}
+              className="fixed sm:absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 bg-cream shadow-md rounded-full flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors z-50 group"
             >
-              <motion.div
-                className="text-3xl mb-4 inline-block"
-                whileHover={{ rotate: [0, -12, 12, -8, 0], scale: 1.15 }}
-                transition={{ duration: 0.6 }}
+              <X className="w-5 h-5 text-text-dark group-hover:text-charcoal transition-colors" />
+            </button>
+
+            <div className="flex flex-col items-center gap-12 sm:gap-24 py-16 sm:py-24 px-4 sm:px-8" style={{ perspective: "1500px" }}>
+              <motion.div 
+                className="text-center mb-4 sm:mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               >
-                {f.icon}
+                <p className="label-eyebrow text-gold mb-5 tracking-[0.2em]">THE DIFFERENCE</p>
+                <h2 className="font-display text-text-dark leading-[1.1]" style={{ fontSize: "clamp(40px, 7vw, 72px)" }}>
+                  Why B.Tech Wala<br/><span className="italic font-normal text-forest">Hydro Farm?</span>
+                </h2>
               </motion.div>
-              <h3 className="text-lg font-semibold text-text-dark group-hover:text-forest transition-colors">{f.title}</h3>
-              <p className="mt-2 text-sm text-text-muted leading-relaxed">{f.text}</p>
-            </motion.div>
-          ))}
+              
+              <div className="w-full max-w-4xl flex flex-col gap-10 sm:gap-20 pb-20">
+                {features.map((f, i) => (
+                  <motion.div
+                    key={f.title}
+                    initial={{ opacity: 0, y: isMobile ? 80 : 150, rotateX: isMobile ? 0 : 45, scale: isMobile ? 0.95 : 0.85 }}
+                    whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                    viewport={{ once: true, margin: isMobile ? "-50px" : "-150px" }}
+                    transition={{ duration: 1.2, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ scale: 1.02, rotateY: isMobile ? 0 : (i % 2 === 0 ? 3 : -3) }}
+                    className={`bg-cream rounded-[28px] p-8 sm:p-12 shadow-card hover:shadow-[0_40px_80px_rgba(108,140,90,0.15)] transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-12 border border-white/60 ${i % 2 !== 0 ? 'sm:flex-row-reverse sm:text-right' : 'sm:text-left'} text-center`}
+                    style={{ transformOrigin: "top center", transformStyle: "preserve-3d" }}
+                  >
+                    <motion.div
+                      className="text-6xl sm:text-8xl shrink-0"
+                      initial={{ scale: 0, rotate: -45, filter: "blur(10px)" }}
+                      whileInView={{ scale: 1, rotate: 0, filter: "blur(0px)" }}
+                      viewport={{ once: true, margin: isMobile ? "-50px" : "-150px" }}
+                      transition={{ duration: 0.9, delay: 0.4 + i * 0.1, type: "spring", bounce: 0.5 }}
+                    >
+                      {f.icon}
+                    </motion.div>
+                    <div className="flex-1">
+                      <h3 className="text-2xl sm:text-4xl font-display text-text-dark mb-4">{f.title}</h3>
+                      <p className="text-base sm:text-xl text-text-muted leading-relaxed sm:leading-loose">{f.text}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </section>
+      )}
+    </AnimatePresence>
   );
 };

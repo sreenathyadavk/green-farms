@@ -215,16 +215,16 @@ const Auth = () => {
       <FloatingLeaves />
 
       <motion.div
-        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "150vw", opacity: 1, rotate: 0 }}
+        initial={animPhase === 4 ? { x: 0, opacity: 1 } : { x: "50vw", opacity: 1, rotate: 0 }}
         animate={
-          animPhase === 0 ? { x: "150vw", opacity: 1, rotate: 0 } :
+          animPhase === 0 ? { x: "50vw", opacity: 1, rotate: 0 } :
           animPhase === 1 ? { x: 0, opacity: 1, rotate: -2 } : 
           { x: 0, opacity: 1, rotate: 0 }
         }
         transition={{ 
           type: "spring", 
-          stiffness: 50, 
-          damping: 12, 
+          stiffness: 30, 
+          damping: 15, 
           mass: 1.2,
         }}
         className={`relative z-10 w-full max-w-md flex flex-col items-center mt-16 sm:mt-0 transition-all duration-700 ${
