@@ -50,13 +50,7 @@ export const PackagesSection = () => {
                 className={`glass-card rounded-[28px] overflow-hidden flex flex-col group transition-shadow duration-500 hover:shadow-[0_24px_60px_rgba(0,0,0,0.35)] ${pkg.featured ? "md:-mt-4 md:scale-[1.02] border-gold/30" : "border-cream/10"}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  {/* Circular Motion Effect */}
-                  <motion.div 
-                    className="absolute inset-0 z-0 bg-gradient-to-tr from-gold/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 15, ease: "linear", repeat: Infinity }}
-                    style={{ transformOrigin: "center center", scale: 1.5 }}
-                  />
+                  
                   
                   <motion.img
                     variants={{

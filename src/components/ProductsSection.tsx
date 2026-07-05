@@ -1,33 +1,38 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { products, type Category, type Product } from "@/data/catalog";
+import { useProducts } from "@/hooks/useProducts";
+import type { Product } from "@/types/models";
 import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import { ProductShowcase } from "./ProductShowcase";
 
+type Category = "All" | "Greens" | "Herbs" | "Microgreens" | "Boxes" | "Fitness" | "Premium";
 const categories: Category[] = ["All", "Greens", "Herbs", "Microgreens", "Boxes", "Fitness", "Premium"];
 
 export const ProductsSection = () => {
+  const { products, loading } = useProducts();
   const [active, setActive] = useState<Category>("All");
   const [showcase, setShowcase] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
 
-  const filtered = products.filter((p) =>
-    active === "All" ? true : active === "Boxes" || active === "Fitness" ? false : p.category === active
-  );
+  const filtered = products.filter((p) => {
+    if (active === "All") return true;
+    if (active === "Boxes" || active === "Fitness") return false;
+    return p.category === active;
+  });
 
   return (
     <>
       {/* Filter chips */}
-      <section className="bg-mist py-6 sticky-none">
+      <section className="bg-mist py-6">
         <div className="container mx-auto">
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5 snap-x-mandatory">
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5">
             {categories.map((c) => (
               <motion.button
                 key={c}
                 onClick={() => setActive(c)}
                 whileTap={{ scale: 0.94 }}
-                className={`shrink-0 snap-start px-4 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300 relative ${
+                className={`shrink-0 px-4 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300 relative ${
                   active === c
                     ? "bg-forest text-cream shadow-card"
                     : "bg-sand text-text-dark hover:bg-sand/70"
@@ -66,27 +71,36 @@ export const ProductsSection = () => {
             >
               <span className="mt-1.5 w-2 h-2 rounded-full bg-gold animate-pulse shrink-0" />
               <p className="text-sm text-text-dark leading-relaxed">
-                <span className="font-semibold">Pre-order only.</span> Microgreens (50g · ₹150) are sown to order — delivered after the <span className="font-semibold">7-day harvest cycle</span>.
+                <span className="font-semibold">Pre-order only.</span> Microgreens are sown to order — delivered after the{" "}
+                <span className="font-semibold">7-day harvest cycle</span>.
               </p>
             </motion.div>
           )}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
-            >
-              {filtered.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} onClick={() => setShowcase(p)} />
+          {loading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="rounded-[24px] bg-sand animate-pulse aspect-[3/4]" />
               ))}
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35 }}
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+              >
+                {filtered.map((p, i) => (
+                  <ProductCard key={p.id || `product-${i}`} product={p} index={i} onClick={() => setShowcase(p)} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <p className="text-center text-text-muted py-16 italic">View our salad boxes below ↓</p>
           )}
         </div>

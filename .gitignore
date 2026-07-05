@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+server/.env
+
+# Sensitive Files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
+hostinger-vps
+Test API Key*

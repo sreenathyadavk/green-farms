@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import type { Product } from "@/data/catalog";
+import type { Product } from "@/types/models";
 import { X } from "lucide-react";
 
 export const ProductShowcase = ({

@@ -6,6 +6,7 @@ export interface CartItem {
   name: string;
   short: string;
   price: string;
+  priceValue: number;
   image: string;
   qty: number;
   type: "product" | "package";

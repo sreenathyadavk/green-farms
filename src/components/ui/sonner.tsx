@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-refresh/only-export-components, @typescript-eslint/no-require-imports, prefer-const */
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
 

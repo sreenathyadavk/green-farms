@@ -50,6 +50,7 @@ export const PackageModal = ({ pkg, onClose }: { pkg: Package | null; onClose: (
         name: pkg.name + (selectedAddOns.length ? ` (+ ${selectedAddOns.join(", ")})` : ""),
         short: pkg.summary,
         price: pkg.price + " / wk",
+        priceValue: pkg.priceValue,
         image: pkg.image,
         type: "package",
       },

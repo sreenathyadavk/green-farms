@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { Product } from "@/data/catalog";
+import type { Product } from "@/types/models";
+import { effectivePrice } from "@/hooks/useProducts";
 import { useCart } from "@/store/cart";
 import { useToast } from "@/store/toast";
 import { openWhatsApp, buildProductMessage } from "@/lib/whatsapp";
@@ -38,7 +39,16 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
 
   const handleAdd = () => {
     if (!product) return;
-    add({ id: product.id, name: product.name, short: product.short, price: product.price, image: product.image, type: "product" }, qty);
+    const ep = effectivePrice(product);
+    add({
+      id: product.id,
+      name: product.name,
+      short: product.short,
+      price: ep.display,
+      priceValue: ep.numeric,
+      image: product.image,
+      type: "product",
+    }, qty);
     showToast("Added to your selection ✓");
     onClose();
   };
@@ -86,7 +96,22 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
               className="flex-1 p-6 sm:p-10 lg:p-14 overflow-y-auto no-scrollbar relative flex flex-col justify-center bg-mist"
             >
               <motion.h3 variants={itemVariants} className="font-display text-4xl sm:text-5xl text-text-dark leading-[1.1]">{product.name}</motion.h3>
-              <motion.p variants={itemVariants} className="mt-3 font-display text-3xl text-forest font-medium">{product.price}</motion.p>
+              <motion.div variants={itemVariants} className="mt-3 flex items-baseline gap-3">
+                {(() => {
+                  const ep = effectivePrice(product);
+                  return (
+                    <>
+                      <span className="font-display text-3xl text-forest font-medium">{ep.display}</span>
+                      {ep.discounted && (
+                        <>
+                          <span className="text-text-muted line-through text-lg">{ep.original}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500 text-white uppercase tracking-wide">{ep.discountLabel}</span>
+                        </>
+                      )}
+                    </>
+                  );
+                })()}
+              </motion.div>
               
               <motion.div variants={itemVariants} className="w-12 h-1 bg-gold rounded-full my-6" />
 
@@ -137,9 +162,12 @@ export const ProductModal = ({ product, onClose }: { product: Product | null; on
                 <div className="flex w-full gap-3">
                   <button
                     onClick={handleAdd}
-                    className="flex-1 h-16 rounded-full bg-forest text-cream text-sm font-semibold tracking-wide hover:bg-teal transition-colors shadow-card-hover"
+                    disabled={product.stock <= 0}
+                    className={`flex-1 h-16 rounded-full text-sm font-semibold tracking-wide transition-colors shadow-card-hover ${
+                      product.stock <= 0 ? "bg-sand text-text-muted cursor-not-allowed" : "bg-forest text-cream hover:bg-teal"
+                    }`}
                   >
-                    Add to Cart
+                    {product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
                   </button>
                   <button
                     onClick={() => openWhatsApp(buildProductMessage(product.name))}

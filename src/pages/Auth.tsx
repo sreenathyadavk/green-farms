@@ -112,8 +112,7 @@ const Auth = () => {
   const [animPhase, setAnimPhase] = useState(0);
   const [showRocket, setShowRocket] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const seqRef = useRef<any[]>([]);
-
+  const seqRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => {
     setIsMobile(window.innerWidth < 640);
     const handleResize = () => setIsMobile(window.innerWidth < 640);
@@ -126,16 +125,21 @@ const Auth = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    runSequence();
-    return () => clearSequence();
-  }, []);
+    const t = setTimeout(() => {
+      runSequence();
+    }, 100);
+    return () => {
+      clearTimeout(t);
+      clearSequence();
+    };
+  }, [runSequence, clearSequence]);
 
-  const clearSequence = () => {
+  const clearSequence = useCallback(() => {
     seqRef.current.forEach(clearTimeout);
     seqRef.current = [];
-  };
+  }, []);
 
-  const runSequence = () => {
+  const runSequence = useCallback(() => {
     clearSequence();
     setShowRocket(true);
     setAnimPhase(0);
@@ -147,7 +151,7 @@ const Auth = () => {
       setShowRocket(false);
       setAnimPhase(4);
     }, 4500));
-  };
+  }, [clearSequence]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,8 +180,8 @@ const Auth = () => {
         toast({ title: "Welcome back", description: "Signed in successfully." });
         navigate("/", { replace: true });
       }
-    } catch (err: any) {
-      const msg = err?.message || "Something went wrong";
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
       const friendly = msg.includes("already registered")
         ? "This email is already registered. Try signing in."
         : msg.includes("Invalid login")
@@ -207,7 +211,7 @@ const Auth = () => {
 
       <Link
         to="/"
-        className="absolute top-6 left-6 inline-flex items-center gap-2 text-cream/70 hover:text-gold text-sm transition-colors z-10"
+        className="absolute top-6 left-6 inline-flex items-center gap-2 text-cream/70 hover:text-gold text-sm transition-colors z-50 bg-charcoal/40 px-4 py-2 rounded-full backdrop-blur-md border border-cream/10"
       >
         <ArrowLeft className="w-4 h-4" /> Back to farm
       </Link>

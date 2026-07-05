@@ -1,10 +1,21 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import heroImg from "@/assets/hero-greens.jpg";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Plant3D } from "./Plant3D";
 
+const animatedTexts = ["Grown Clean.", "Delivered Fresh."];
+
 export const Hero = () => {
+  const [textIndex, setTextIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTextIndex((prev) => (prev + 1) % animatedTexts.length);
+    }, 6000); // 5s visibility + 1s transition
+    return () => clearInterval(timer);
+  }, []);
   return (
     <section id="home" className="relative min-h-screen w-full overflow-hidden bg-forest grain">
       {/* Background image with parallax */}
@@ -57,63 +68,82 @@ export const Hero = () => {
               Fresh Hydroponic Lettuce
             </motion.div>
             
-            <div className="italic font-normal mt-2 relative inline-block text-gold">
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-block relative mr-3 sm:mr-4"
-              >
-                Grown Clean,
-              </motion.span>
+            <div className="italic font-normal mt-2 relative flex flex-wrap items-center text-gold">
               
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 2.2, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-block relative"
-              >
-                Delivered Fresh.
-              </motion.span>
+              {/* Text Animation Wrapper */}
+              <div className="mr-3 sm:mr-4 grid items-center">
+                {/* Invisible placeholder for layout stability */}
+                <span className="invisible pointer-events-none" style={{ gridArea: "1 / 1" }}>
+                  Delivered Fresh.
+                </span>
 
-              {/* The scanner overlay */}
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={textIndex}
+                    initial={{ 
+                      opacity: 0, 
+                      y: 30, 
+                      filter: "blur(12px)",
+                      backgroundPosition: "150% 0%"
+                    }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0, 
+                      filter: "blur(0px)",
+                      backgroundPosition: "-50% 0%"
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      y: -30, 
+                      filter: "blur(12px)"
+                    }}
+                    transition={{ 
+                      opacity: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                      y: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                      filter: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                      backgroundPosition: { duration: 2.2, delay: 0.2, ease: "easeInOut" }
+                    }}
+                    className="inline-block whitespace-nowrap bg-clip-text text-transparent"
+                    style={{
+                      gridArea: "1 / 1",
+                      backgroundImage: "linear-gradient(90deg, #c4a882 0%, #c4a882 40%, #4ade80 50%, #16a34a 52%, #c4a882 60%, #c4a882 100%)",
+                      backgroundSize: "300% 100%",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {animatedTexts[textIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+
+              {/* Inline True 3D Plant Model (Three.js via React Three Fiber) */}
               <motion.div 
-                className="absolute inset-0 pointer-events-none animate-text-scanner whitespace-nowrap"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 3.5 }}
+                className="w-32 h-32 sm:w-44 sm:h-44 lg:w-56 lg:h-56 relative z-20 pointer-events-none mt-2 sm:mt-0 ml-6 sm:ml-10 lg:ml-16"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                Grown Clean, Delivered Fresh.
+                {/* Dynamic shadow that responds to floating */}
+                <motion.div 
+                  className="absolute inset-0 m-auto w-[80%] h-[80%] rounded-full bg-forest/40 blur-[40px] pointer-events-none" 
+                  animate={{ scale: [1, 0.8, 1], opacity: [0.6, 0.3, 0.6] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                />
+                
+                <div className="w-full h-full relative z-10 pointer-events-auto">
+                  <Plant3D />
+                </div>
               </motion.div>
             </div>
           </motion.h1>
-          
-          {/* True 3D Plant Model (Three.js via React Three Fiber) */}
-          <motion.div 
-            className="absolute -right-10 -top-20 sm:right-10 sm:-top-10 w-48 h-48 sm:w-72 sm:h-72 lg:w-[420px] lg:h-[420px] z-0"
-            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Dynamic shadow that responds to floating */}
-            <motion.div 
-              className="absolute inset-0 rounded-full bg-forest/40 blur-3xl pointer-events-none" 
-              animate={{ scale: [1, 0.8, 1], opacity: [0.5, 0.2, 0.5] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transform: "translateY(120px) scale(0.8)" }} 
-            />
-            
-            <div className="w-full h-full relative z-10 pointer-events-auto">
-              <Plant3D />
-            </div>
-          </motion.div>
         </div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-7 max-w-md text-sand/85 text-base sm:text-lg leading-relaxed"
+          className="mt-7 max-w-md text-sand/85 text-base sm:text-lg leading-relaxed relative z-10"
         >
           Precision-grown hydroponic greens, curated salad boxes, and farm-fresh produce. Delivered to your door.
         </motion.p>
@@ -122,7 +152,7 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.65 }}
-          className="mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
+          className="mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 relative z-10"
         >
           <a
             href="#shop"
@@ -130,26 +160,53 @@ export const Hero = () => {
           >
             <span className="text-base">🛒</span> Order Fresh
           </a>
-          <button
-            onClick={() => openWhatsApp("Hi! I'd like to know more about B.Tech Wala Hydro Farm produce and salad boxes.")}
-            className="inline-flex items-center justify-center gap-2 h-13 px-7 py-4 rounded-full border border-cream/70 text-cream text-sm font-semibold tracking-wide hover:bg-cream hover:text-charcoal transition-colors"
-          >
-            <MessageCircle className="w-4 h-4" /> Order on WhatsApp
-          </button>
+        </motion.div>
+
+        {/* Stats Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
+          className="mt-10 relative z-10"
+        >
+          <div className="inline-flex flex-wrap gap-x-0 gap-y-3 rounded-2xl border border-cream/10 bg-white/5 backdrop-blur-sm overflow-hidden">
+            {[
+              { value: "1000+", label: "Orders\nDelivered",    icon: "📦" },
+              { value: "500+",  label: "Happy\nCustomers",     icon: "😊" },
+              { value: "HYD",   label: "Hyderabad\nDelivery",  icon: "🚚" },
+              { value: "4.9★",  label: "Customer\nRating",     icon: "⭐" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.value}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.9 + i * 0.1 }}
+                className="flex items-center gap-3 px-5 py-3.5 border-r border-cream/10 last:border-r-0"
+              >
+                <span className="text-xl leading-none">{stat.icon}</span>
+                <div>
+                  <p className="font-display text-cream text-lg leading-none font-semibold">{stat.value}</p>
+                  <p className="text-sand/70 text-[10px] leading-tight mt-0.5 whitespace-pre-line tracking-wide">{stat.label}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.95 }}
-          className="mt-auto pt-16"
+          className="mt-auto pt-12 relative z-10"
         >
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[11px] sm:text-xs tracking-[0.12em] uppercase text-sand/85">
-            <span>🌿 Soil-Free · 95% Less Water</span>
+            <span>🌿 Pesticide Free</span>
             <span className="hidden sm:inline w-px h-3 bg-sand/30" />
-            <span>📦 Weekly Curated Boxes</span>
+            <span>💧 95% Less Water</span>
             <span className="hidden sm:inline w-px h-3 bg-sand/30" />
-            <span>🛵 Delivered Fresh</span>
+            <span>🌅 Same-Day Harvest</span>
+            <span className="hidden sm:inline w-px h-3 bg-sand/30" />
+            <span>🍃 Fresh Every Morning</span>
           </div>
         </motion.div>
       </div>

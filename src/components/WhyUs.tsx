@@ -61,7 +61,7 @@ export const WhyUs = () => {
           >
             <button
               onClick={() => setIsOpen(false)}
-              className="fixed sm:absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 bg-cream shadow-md rounded-full flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors z-50 group"
+              className="fixed sm:fixed top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-cream shadow-md rounded-full flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors z-50 group"
             >
               <X className="w-5 h-5 text-text-dark group-hover:text-charcoal transition-colors" />
             </button>
