@@ -2,6 +2,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import { verifyPaymentSignature } from "./payment";
 import { 
   saveOrder, 
@@ -18,6 +20,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "*";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(express.json());
@@ -195,6 +200,12 @@ app.get("/api/analytics", async (req, res) => {
     console.error("[GET] /api/analytics error:", error.message);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
+});
+
+// Serve frontend in production
+app.use(express.static(path.join(__dirname, "../dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 // Start API with Dynamic Port Fallback
