@@ -116,26 +116,6 @@ export const Hero = () => {
                   </motion.span>
                 </AnimatePresence>
               </div>
-
-              {/* Inline True 3D Plant Model (Three.js via React Three Fiber) */}
-              <motion.div 
-                className="w-32 h-32 sm:w-44 sm:h-44 lg:w-56 lg:h-56 relative z-20 pointer-events-none mt-2 sm:mt-0 ml-6 sm:ml-10 lg:ml-16"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {/* Dynamic shadow that responds to floating */}
-                <motion.div 
-                  className="absolute inset-0 m-auto w-[80%] h-[80%] rounded-full bg-forest/40 blur-[40px] pointer-events-none" 
-                  animate={{ scale: [1, 0.8, 1], opacity: [0.6, 0.3, 0.6] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                />
-                
-                <div className="w-full h-full relative z-10 pointer-events-auto">
-                  <Plant3D />
-                </div>
-              </motion.div>
-            </div>
           </motion.h1>
         </div>
 

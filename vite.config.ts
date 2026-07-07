@@ -16,12 +16,12 @@ export default defineConfig(({ mode }) => ({
       // All /api/* and /health calls are forwarded to the Express backend
       // This means only ONE Cloudflare tunnel is needed for sharing
       "/api": {
-        target: "http://localhost:4050",
+        target: "http://localhost:3000",
         changeOrigin: true,
         secure: false,
       },
       "/health": {
-        target: "http://localhost:4050",
+        target: "http://localhost:3000",
         changeOrigin: true,
         secure: false,
       },

@@ -11,9 +11,8 @@ declare global {
   }
 }
 
-// TEMPORARY: Hardcoded Test Key ID.
-// In production, this should be fetched from the VPS or injected via env vars.
-const RAZORPAY_TEST_KEY_ID = "rzp_test_T6F39zOIbBvs8w";
+// Fetch public key from environment (Safe to expose)
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
 interface CheckoutOptions {
   amount: number; // In Rupees (not paise, we will multiply internally)
@@ -62,20 +61,35 @@ export const PaymentService = {
       throw new Error("Failed to load Razorpay SDK. Please check your connection.");
     }
 
-    // TODO: VPS INTEGRATION - Create Order
-    // In production, make an API call to your VPS here to securely generate a Razorpay Order ID.
-    // const { orderId } = await api.post('/create-razorpay-order', { amount });
-    const mockOrderId = `order_${Math.random().toString(36).substring(2, 15)}`;
+    if (!RAZORPAY_KEY_ID) {
+      throw new Error("Razorpay configuration is missing.");
+    }
+
+    // Securely generate order ID from backend
+    let orderId: string;
+    try {
+      const response = await fetch('/api/create-razorpay-order', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to create order.");
+      }
+      orderId = data.orderId;
+    } catch (err: any) {
+      throw new Error("Checkout currently unavailable: " + err.message);
+    }
 
     return new Promise((resolve, reject) => {
       const options = {
-        key: RAZORPAY_TEST_KEY_ID,
-        amount: amount * 100, // Razorpay expects amount in paise
+        key: RAZORPAY_KEY_ID,
+        amount: Math.round(amount * 100), // Razorpay expects amount in paise
         currency: "INR",
         name: "B.Tech Wala Hydro Farm",
         description: "Fresh Hydroponic Harvest",
-        // Omit order_id to allow unlinked payment for testing (avoids 400 Bad Request)
-        // order_id: mockOrderId, 
+        order_id: orderId, 
         handler: async function (response: PaymentSuccessResponse) {
           // TODO: VPS INTEGRATION - Verify Payment
           // In production, send these IDs to your VPS to securely verify the HMAC SHA256 signature.

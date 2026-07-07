@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import Razorpay from "razorpay";
 import { verifyPaymentSignature } from "./payment";
 import { 
   saveOrder, 
@@ -99,6 +100,44 @@ app.post("/save-order", async (req, res) => {
   } catch (error) {
     console.error("Internal Server Error:", error);
     return res.status(500).json({ success: false, error: "Internal server error." });
+  }
+});
+
+// Create Razorpay Order securely
+app.post("/api/create-razorpay-order", async (req, res) => {
+  try {
+    const { amount } = req.body;
+    
+    // Validate request data
+    if (!amount || typeof amount !== "number" || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid amount provided." });
+    }
+
+    const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
+    if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+      console.error("Missing Razorpay credentials in environment.");
+      return res.status(500).json({ success: false, message: "Payment gateway configuration error." });
+    }
+
+    const razorpay = new Razorpay({
+      key_id: RAZORPAY_KEY_ID,
+      key_secret: RAZORPAY_KEY_SECRET,
+    });
+
+    // Razorpay expects amount in paise
+    const options = {
+      amount: Math.round(amount * 100),
+      currency: "INR",
+      receipt: `rcpt_${Math.random().toString(36).substring(2, 12)}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    
+    return res.json({ success: true, orderId: order.id });
+  } catch (error: any) {
+    // Log errors only without exposing secrets
+    console.error("Razorpay Order Creation Error:", error.message || error);
+    return res.status(500).json({ success: false, message: "Unable to create Razorpay order." });
   }
 });
 
