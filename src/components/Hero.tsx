@@ -116,6 +116,7 @@ export const Hero = () => {
                   </motion.span>
                 </AnimatePresence>
               </div>
+            </div>
           </motion.h1>
         </div>
 
